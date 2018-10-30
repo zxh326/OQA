@@ -9,15 +9,15 @@
         <webroots>
           <root url="file://$MODULE_DIR$/web" relative="/" />
         </webroots>
-        <sourceRoots>
-          <root url="file://$MODULE_DIR$/src" />
-        </sourceRoots>
+        <sourceRoots />
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
       <configuration>
         <fileset id="fileset" name="ApplicationContext Main" removed="false">
           <file>file://$MODULE_DIR$/src/main/resources/spring/ApplicationContext-mvc.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/spring/ApplicationContext-netty.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/spring/ApplicationContext-main.xml</file>
         </fileset>
       </configuration>
     </facet>
