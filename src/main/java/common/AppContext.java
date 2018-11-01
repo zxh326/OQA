@@ -29,6 +29,7 @@ public class AppContext {
     public void close() {
         webSocketServer.close();
         nettyThread.stop();
+        System.out.println("close");
     }
 
 }

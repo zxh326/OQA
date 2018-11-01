@@ -8,11 +8,14 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.sctp.nio.NioSctpServerChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.Future;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
 public class WebSocketServer implements Runnable {
+    private final Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
 
     @Autowired
     private EventLoopGroup bossGroup;
@@ -26,14 +29,19 @@ public class WebSocketServer implements Runnable {
     private ChannelFuture serverChannelFuture;
 
     public void run() {
-        build();
+        try {
+            build();
+        } catch (InterruptedException e) {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
     }
 
 
     /**
      * Build Netty Server
      */
-    public void build() {
+    public void build() throws InterruptedException {
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 1024)
@@ -41,18 +49,13 @@ public class WebSocketServer implements Runnable {
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(childChannelHandler);
 
-        bind(serverBootstrap, PORT);
+        serverChannelFuture = serverBootstrap.bind(PORT).sync();
+
+        logger.info(PORT + ":success");
+
+
     }
 
-    private static void bind(final ServerBootstrap serverBootstrap, final int port) {
-        serverBootstrap.bind(port).addListener(future -> {
-            if (future.isSuccess()) {
-                System.out.println(new Date() + ": 端口[" + port + "]绑定成功!");
-            } else {
-                System.err.println("端口[" + port + "]绑定失败!");
-            }
-        });
-    }
 
     public void close(){
         serverChannelFuture.channel().close();
@@ -65,6 +68,8 @@ public class WebSocketServer implements Runnable {
         } catch (InterruptedException ignore) {
             ignore.printStackTrace();
         }
+
+        logger.info("netty close");
     }
 
     public ChannelHandler getChildChannelHandler() {

@@ -11,6 +11,7 @@ public class  webSocketChildChannelHandler extends ChannelInitializer<SocketChan
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline().addLast(new HttpServerCodec());   // 使用自带的解码http解码器。
+        ch.pipeline().addLast(new WebSocketServerHandler());
 
     }
 }

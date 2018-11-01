@@ -13,4 +13,21 @@
   <body>
   $END$
   </body>
+
+  <script>
+      if(window.WebSocket) {
+          socket = new WebSocket("ws://localhost:3333")
+          console.log(socket)
+      }
+
+      const data = {
+          "type" : "test"
+      };
+
+      socket.onopen = setTimeout(function(event){
+          console.log("WebSocket已成功连接！");
+          ws.register();
+      }, 1000)
+
+  </script>
 </html>

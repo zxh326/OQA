@@ -14,13 +14,19 @@
     <context:component-scan base-package="service"/>
 
 
-    <!-- 引入jdbc配置文件 -->
-    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+    <bean id="configProperties"
+          class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations">
             <list>
-                <value>classpath:properties/*.properties</value>
+                <value>classpath:properties/config.properties</value>
+                <value>classpath:properties/log4j.properties</value>
             </list>
         </property>
+    </bean>
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+        <property name="properties" ref="configProperties" />
     </bean>
 
 </beans>
