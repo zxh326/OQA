@@ -26,7 +26,6 @@
 
       socket.onopen = setTimeout(function(event){
           console.log("WebSocket已成功连接！");
-          ws.register();
       }, 1000)
 
   </script>
