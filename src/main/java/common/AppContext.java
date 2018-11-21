@@ -28,7 +28,6 @@ public class AppContext {
     @PreDestroy
     public void close() {
         webSocketServer.close();
-        nettyThread.stop();
         System.out.println("close");
     }
 

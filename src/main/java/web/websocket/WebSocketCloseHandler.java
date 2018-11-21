@@ -11,6 +11,7 @@ public class WebSocketCloseHandler extends SimpleChannelInboundHandler<CloseWebS
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, CloseWebSocketFrame msg) throws Exception {
-        logger.info("close");
+        // TODO 将用户移除连接池
+        logger.info(ctx.channel().id() + ":close");
     }
 }

@@ -3,13 +3,13 @@ package web.websocket;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import utils.ChannelHandlerPool;
 
 
 /**
@@ -23,7 +23,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("active");
+        ChannelHandlerPool.channelGroup.add(ctx.channel());
         super.channelActive(ctx);
     }
 
@@ -33,7 +33,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
     }
 
     private void handlerWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame wf) throws Exception{
-
         String request = ((TextWebSocketFrame)wf).text();
 
         System.out.println(request);
