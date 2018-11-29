@@ -1,5 +1,6 @@
 package web.controller;
 
+import model.vo.R;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,9 +26,9 @@ public class UserController {
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody
-    public String login(HttpSession session,
-                        @RequestParam String username,
-                        @RequestParam String password) {
+    public R login(HttpSession session,
+                   @RequestParam String username,
+                   @RequestParam String password) {
         return userService.login(username, password, session);
     }
 }

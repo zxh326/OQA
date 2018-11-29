@@ -5,47 +5,47 @@ import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 
-public class ResponseJson extends HashMap<String, Object> {
+public class R extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
 
     private static final Integer SUCCESS_STATUS = 200;
     private static final Integer ERROR_STATUS = -1;
     private static final String SUCCESS_MSG = "ok";
     
-    public ResponseJson() {
+    public R() {
         super();
     }
 
-    public ResponseJson(int code) {
+    public R(int code) {
         super();
         setStatus(code);
     }
 
-    public ResponseJson(HttpStatus status) {
+    public R(HttpStatus status) {
         super();
         setStatus(status.value());
         setMsg(status.getReasonPhrase());
     }
     
-    public ResponseJson success() {
+    public R success() {
         put("msg", SUCCESS_MSG);
         put("status", SUCCESS_STATUS);
         return this;
     }
     
-    public ResponseJson success(String msg) {
+    public R success(String msg) {
         put("msg", msg);
         put("status", SUCCESS_STATUS);
         return this;
     }
     
-    public ResponseJson error(String msg) {
+    public R error(String msg) {
         put("msg", msg);
         put("status", ERROR_STATUS);
         return this;
     }
 
-    public ResponseJson setData(String key, Object obj) {
+    public R setData(String key, Object obj) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> data = (HashMap<String, Object>) get("data");
         if (data == null) {
@@ -56,17 +56,18 @@ public class ResponseJson extends HashMap<String, Object> {
         return this;
     }
     
-    public ResponseJson setStatus(int status) {
+    private R setStatus(int status) {
         put("status", status);
         return this;
     }
 
-    public ResponseJson setMsg(String msg) {
+
+    private R setMsg(String msg) {
         put("msg", msg);
         return this;
     }
 
-    public ResponseJson setValue(String key, Object val) {
+    public R setValue(String key, Object val) {
         put(key, val);
         return this;
     }

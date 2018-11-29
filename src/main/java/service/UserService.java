@@ -1,7 +1,6 @@
 package service;
 
-import model.po.User;
-import model.vo.ResponseJson;
+import model.vo.R;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
@@ -9,5 +8,5 @@ import javax.servlet.http.HttpSession;
 @Service
 public interface UserService {
 
-    ResponseJson login(String username, String password, HttpSession session);
+    R login(String username, String password, HttpSession session);
 }

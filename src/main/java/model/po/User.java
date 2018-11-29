@@ -1,18 +1,18 @@
 package model.po;
 
 public class User  {
-    private String userId;
+    private Integer userId;
     private String userName;
     private String userRole;
     private String userPass;
     
     private String avatarUrl;
     
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
