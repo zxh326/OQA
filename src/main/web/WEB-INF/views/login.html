@@ -57,9 +57,9 @@
                     if (data.status !==200){
                         $("#errormsg").html(data.msg)
                     }else{
-                        window.navigator("/oqa")
+                        console.log(data)
+                        window.href='/oqa'
                     }
-                    console.log(data)
                 }
             });
         }

@@ -16,5 +16,7 @@ public class  webSocketChildChannelHandler extends ChannelInitializer<SocketChan
         ch.pipeline().addLast(new HttpRequestHandler());
         ch.pipeline().addLast(new WebSocketCloseHandler());
         ch.pipeline().addLast(new WebSocketServerHandler());
+
+        ch.pipeline().addLast(new MessageEncoder());
     }
 }

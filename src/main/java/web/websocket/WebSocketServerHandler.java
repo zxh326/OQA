@@ -10,7 +10,10 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import model.vo.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import service.OqaService;
+import service.impl.OqaServiceImpl;
 import utils.ChannelHandlerPool;
 
 
@@ -21,6 +24,9 @@ import utils.ChannelHandlerPool;
 @ChannelHandler.Sharable
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
     private final Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
+
+//    @Autowired/
+    private OqaService oqaService = OqaServiceImpl.INSTANCE;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -48,6 +54,16 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
             return;
         }
 
+        String type = (String) param.get("type");
+
+        switch (type){
+            case "REGISTER":
+                oqaService.register(param, ctx);
+                break;
+            default:
+                sendErrorMessage(ctx, "no");
+        }
+
         System.out.println(param);
     }
 
@@ -55,7 +71,12 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         String responseJson = new R()
                 .error(errorMsg)
                 .toString();
-        ctx.channel().writeAndFlush(new TextWebSocketFrame(responseJson));
+        ctx.channel().writeAndFlush(responseJson);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        oqaService.remove(ctx);
     }
 
 
