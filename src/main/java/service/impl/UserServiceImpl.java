@@ -1,10 +1,12 @@
 package service.impl;
 
-import common.Secret;
-import common.TokenManager;
+import utils.Secret;
+import utils.TokenManager;
 import dao.UserDao;
 import model.po.User;
+import model.po.UserProfile;
 import model.vo.R;
+import model.vo.RegUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import service.UserService;
@@ -18,18 +20,49 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public R login(String username, String password, HttpSession session) {
-        User user = userDao.getUserByName(username);
+    public R login(User tuser, HttpSession session) {
+        User user = userDao.getUserByLoginIdWithRole(tuser);
 
         if (user == null){
-            return new R().error("no username");
+            return new R().error("no loginId");
 
         }
-        if (!Secret.checkPassword(password, user.getUserPass())){
+        if (!Secret.checkPassword(tuser.getUserPass(), user.getUserPass())){
             return new R().error("no password");
         }
 
-        session.setAttribute("token", TokenManager.generateToken(user.getUserId()));
+        session.setAttribute("token", TokenManager.generateToken(user.getUserId()).getToken());
         return new R().success();
+    }
+
+    @Override
+    public R reg(RegUser regUser) {
+        if (userDao.getUserByLoginId(regUser.getLoginId())!=null){
+            return new R().error("已注册");
+        }
+        if (regUser.getPassword().length() <= 6){
+            return new R().error("密码太短");
+        }
+        // TODO: check dep
+
+        User u = new User(regUser.getLoginId(), regUser.getUserRole(), Secret.enPassword(regUser.getPassword()));
+        userDao.regUser(u);
+        System.out.println(u.toString());
+        if (u.getUserId()==null){
+            return new R().error("error");
+        }
+
+        UserProfile up = new UserProfile(u.getUserId(), regUser.getUsername(), regUser.getDepartment());
+        userDao.addUserProfile(up);
+
+        return new R().success();
+    }
+
+    @Override
+    public R getUserInfobyId(Integer userId) {
+        User user = userDao.getUserById(userId);
+        UserProfile up = userDao.getUserProfileById(userId);
+        return new R().success().setData("user", user)
+                                .setData("userprofile", up);
     }
 }

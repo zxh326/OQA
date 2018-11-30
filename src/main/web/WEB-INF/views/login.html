@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>云壁纸,分享壁纸,寻找美好</title>
+        <link media="all" type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css">
+        <link media="all" type="text/css" rel="stylesheet" href="/static/css/loginstyle.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-3 col-md-6">
+                    <form class="form-horizontal" style="display: block;" id="login">
+                        <span class="heading">云壁纸登录</span>
+                        <div class="form-group">
+                            <input name="loginId" type="text" class="form-control" id="loginId" placeholder="请输入用户名" />
+                        </div>
+                        <div class="form-group">
+                            <input name="password" type="password" class="form-control" id="password" placeholder="请输入密码" />
+                        </div>
+                        <div class="form-group">
+                            <input type="radio" value="0" checked name="userRole"/>Student
+                            <input type="radio" value="1" name="userRole"/>Teacher
+                        </div>
+                        <div class="form-group">
+                            <p id="errormsg"></p>
+                        </div>
+                        <div class="form-group">
+                            <li class="li4">
+                                <input class="submit" type="button" id="btnSubmit" value="登录">
+                            </li>
+                            <li class="li3">
+                                <a  class="visitor" href="/auth/reg"> 注册新用户</a>
+                            </li>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+    
+    <script src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        function login() {
+            $.ajax({
+                type : 'POST',
+                dataType: 'json',
+                data : {
+                    loginId: $("#loginId").val(),
+                    userPass: $("#password").val(),
+                    userRole: $("input[name='userRole']:checked").val()
+                },
+                async : false,
+                success: function(data) {
+                    if (data.status !==200){
+                        $("#errormsg").html(data.msg)
+                    }else{
+                        window.navigator("/oqa")
+                    }
+                    console.log(data)
+                }
+            });
+        }
+
+        $('#btnSubmit').click(function () {
+            login();
+        })
+    </script> 
+        <!--动态背景-->
+    <script src="/static/js/jquery.gradientify.min.js"></script>
+    <script src="/static/js/utils.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("body").gradientify({
+                gradients: [
+                    { start: [49,76,172], stop: [242,159,191] },
+                    { start: [255,103,69], stop: [240,154,241] },
+                    { start: [33,229,241], stop: [235,236,117] }
+                ]
+            });
+        });
+    </script>
+
+</html>

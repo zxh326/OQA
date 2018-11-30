@@ -1,13 +1,25 @@
 package model.po;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class User  {
     private Integer userId;
-    private String userName;
-    private String userRole;
+    private String loginId;
+    private Integer userRole;
     private String userPass;
     
     private String avatarUrl;
-    
+
+
+    public User(String loginId, Integer userRole, String userPass) {
+        this.loginId = loginId;
+        this.userRole = userRole;
+        this.userPass = userPass;
+    }
+
+    public User() {
+    }
+
     public Integer getUserId() {
         return userId;
     }
@@ -16,22 +28,15 @@ public class User  {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserRole() {
+    public Integer getUserRole() {
         return userRole;
     }
 
-    public void setUserRole(String userRole) {
+    public void setUserRole(Integer userRole) {
         this.userRole = userRole;
     }
 
+    @JsonIgnore
     public String getUserPass() {
         return userPass;
     }
@@ -46,5 +51,24 @@ public class User  {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", loginId='" + loginId + '\'' +
+                ", userRole=" + userRole +
+                ", userPass='" + userPass + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                '}';
     }
 }

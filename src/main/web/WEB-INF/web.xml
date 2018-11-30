@@ -6,8 +6,6 @@
 
     <display-name>OQA</display-name>
 
-
-
     <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter
@@ -35,26 +33,25 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath:spring/ApplicationContext-main.xml,
-            classpath:spring/ApplicationContext-netty.xml
+            classpath:spring/ApplicationContext-netty.xml,
+            classpath:spring/ApplicationContext-mvc.xml
         </param-value>
     </context-param>
 
 
     <servlet>
-        <servlet-name>Spring-Servlet</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet
-        </servlet-class>
+        <servlet-name>dispatcherServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>
-                classpath:spring/ApplicationContext-mvc.xml
-            </param-value>
+            <!--spingMVC的配置路径  -->
+            <param-value>classpath:spring/ApplicationContext-mvc.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
+    <!-- 拦截设置 -->
     <servlet-mapping>
-        <servlet-name>Spring-Servlet</servlet-name>
+        <servlet-name>dispatcherServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 

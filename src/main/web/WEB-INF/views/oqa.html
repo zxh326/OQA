@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/js/wsocket.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+</head>
+<body>
+
+
+
+<script>
+    var userId;
+    var socket;
+    getUserInfo();
+
+    if(!window.WebSocket){
+        window.WebSocket = window.MozWebSocket;
+    }
+    if(window.WebSocket) {
+        socket = new WebSocket("ws://localhost:3333");
+        socket.onmessage = function(event){
+            var data = JSON.parse(event.data);
+            console.log(data);
+            if (data.status===200){
+            }
+        };
+
+        socket.onopen = setTimeout(function(event){
+            console.log("WebSocket已成功连接！");
+            ws.register();
+        }, 1000);
+
+        socket.onclose = function(event){
+            console.log("WebSocket已关闭...");
+        };
+    }
+
+</script>
+</body>
+
+</html>

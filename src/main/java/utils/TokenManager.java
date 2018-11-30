@@ -1,4 +1,4 @@
-package common;
+package utils;
 
 import model.vo.Token;
 
@@ -7,7 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TokenManager {
-
+    /*
+     * TokenManager
+     * TODO:redis save
+     */
     private static Map<String, Token> tokenMap = new HashMap<>();
     private static Map<Integer, Token> idMap = new HashMap<>();
 
