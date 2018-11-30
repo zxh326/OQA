@@ -6,18 +6,16 @@ import dao.UserDao;
 import model.po.User;
 import model.vo.R;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import service.UserService;
 
 import javax.servlet.http.HttpSession;
 
+@Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
-
     @Autowired
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
-    }
+    private UserDao userDao;
 
     @Override
     public R login(String username, String password, HttpSession session) {

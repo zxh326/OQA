@@ -14,7 +14,6 @@
     <context:component-scan base-package="service"/>
 
 
-
     <bean id="configProperties"
           class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations">
@@ -27,6 +26,16 @@
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
         <property name="properties" ref="configProperties" />
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage"
+                  value="dao" />
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!--<property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />-->
     </bean>
 
     <!-- 配置数据源 -->

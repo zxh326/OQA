@@ -9,5 +9,5 @@ public interface UserDao {
     User getUserById(String userId);
 
     @Select("select * from user where userName=#{username}")
-    public User getUserByName(String username);
+    User getUserByName(String username);
 }

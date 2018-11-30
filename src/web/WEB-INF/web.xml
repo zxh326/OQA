@@ -6,13 +6,7 @@
 
     <display-name>OQA</display-name>
 
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>
-            classpath:spring/ApplicationContext-main.xml,
-            classpath:spring/ApplicationContext-netty.xml
-        </param-value>
-    </context-param>
+
 
     <filter>
         <filter-name>encodingFilter</filter-name>
@@ -36,6 +30,14 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:spring/ApplicationContext-main.xml,
+            classpath:spring/ApplicationContext-netty.xml
+        </param-value>
+    </context-param>
 
 
     <servlet>

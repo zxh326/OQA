@@ -1,6 +1,7 @@
 package web.controller;
 
 import model.vo.R;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,16 +16,16 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/auth")
 public class UserController {
 
-    @Resource
+    @Autowired
     private UserService userService;
 
 
-    @RequestMapping(value = {"login", "/"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String toLogin() {
         return "login";
     }
 
-    @RequestMapping(value = "login", method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
     public R login(HttpSession session,
                    @RequestParam String username,
