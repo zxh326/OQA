@@ -20,7 +20,6 @@ public class AppContext {
 
     @PostConstruct
     public void init() {
-        System.out.println("init");
         nettyThread = new Thread(webSocketServer);
         nettyThread.start();;
     }
@@ -28,7 +27,5 @@ public class AppContext {
     @PreDestroy
     public void close() {
         webSocketServer.close();
-        System.out.println("close");
     }
-
 }

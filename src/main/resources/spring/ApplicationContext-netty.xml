@@ -21,7 +21,7 @@
     <!-- 自定义的Netty Websocket服务器 -->
     <bean id="webSocketServer" class="web.websocket.WebSocketServer">
         <property name="port" value="${websocket.server.port}"/>
-        <property name="childChannelHandler" ref="webSocketChildChannelHandler" />
+        <property name="channelHandler" ref="webSocketChannelHandler" />
     </bean>
 
 </beans>

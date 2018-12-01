@@ -2,14 +2,11 @@ package web.websocket;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
-import io.netty.channel.sctp.nio.NioSctpServerChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Date;
 
 public class WebSocketServer implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
@@ -22,7 +19,7 @@ public class WebSocketServer implements Runnable {
     private ServerBootstrap serverBootstrap;
 
     private int PORT;
-    private ChannelHandler childChannelHandler;
+    private ChannelHandler channelHandler;
     private ChannelFuture serverChannelFuture;
 
     public void run() {
@@ -45,7 +42,7 @@ public class WebSocketServer implements Runnable {
                 .option(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(592048))//配置固定长度接收缓存区分配器
-                .childHandler(childChannelHandler);
+                .childHandler(channelHandler);
 
         serverChannelFuture = serverBootstrap.bind(PORT).sync();
 
@@ -70,12 +67,12 @@ public class WebSocketServer implements Runnable {
         logger.info("netty close");
     }
 
-    public ChannelHandler getChildChannelHandler() {
-        return childChannelHandler;
+    public ChannelHandler getChannelHandler() {
+        return channelHandler;
     }
 
-    public void setChildChannelHandler(ChannelHandler childChannelHandler) {
-        this.childChannelHandler = childChannelHandler;
+    public void setChannelHandler(ChannelHandler channelHandler) {
+        this.channelHandler = channelHandler;
     }
 
     public int getPort() {

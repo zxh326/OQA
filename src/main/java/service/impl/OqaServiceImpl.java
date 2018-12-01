@@ -24,16 +24,17 @@ public class OqaServiceImpl implements OqaService {
     public void register(JSONObject param, ChannelHandlerContext ctx) {
         Integer userId = (Integer)param.get("userId");
         Constant.onlineUserMap.put(userId, ctx);
-        String responseJson = new R().success()
-                .setData("type", ChatType.REGISTER)
-                .toString();
+        R responseJson = new R().success()
+                .setData("type", ChatType.REGISTER);
         sendMessage(ctx, responseJson);
         LOGGER.info(MessageFormat.format("userId为 {0} 的用户登记到在线用户表，当前在线人数为：{1}"
                 , userId, Constant.onlineUserMap.size()));
+
+        Constant.onlineUserMap.get(userId).channel().writeAndFlush(new R().success());
     }
 
-    private void sendMessage(ChannelHandlerContext ctx, String message) {
-        ctx.channel().writeAndFlush(new TextWebSocketFrame(message));
+    private void sendMessage(ChannelHandlerContext ctx, R message) {
+        ctx.channel().writeAndFlush(message);
     }
 
     @Override

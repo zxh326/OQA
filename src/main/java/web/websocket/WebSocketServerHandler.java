@@ -4,13 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import model.vo.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import service.OqaService;
 import service.impl.OqaServiceImpl;
@@ -18,13 +14,9 @@ import utils.ChannelHandlerPool;
 
 import java.lang.reflect.Method;
 
-
-/**
- * 对websocket的解析器
- */
 @Component
 @ChannelHandler.Sharable
-public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
+public class WebSocketServerHandler extends SimpleChannelInboundHandler<JSONObject> {
     private final Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
 
 //    @Autowired/
@@ -32,29 +24,12 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ChannelHandlerPool.channelGroup.add(ctx.channel());
+        logger.info("connect...");
         super.channelActive(ctx);
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame msg) throws Exception {
-        handlerWebSocketFrame(ctx, msg);
-    }
-
-    private void handlerWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame wf) throws Exception{
-        String request = ((TextWebSocketFrame)wf).text();
-
-        JSONObject param = null;
-        try {
-            param = JSONObject.parseObject(request);
-        } catch (Exception e) {
-            sendErrorMessage(ctx, "JSON字符串转换出错！");
-            e.printStackTrace();
-        }
-        if (param == null) {
-            sendErrorMessage(ctx, "参数为空！");
-            return;
-        }
+    protected void channelRead0(ChannelHandlerContext ctx, JSONObject param) throws Exception {
 
         String type = (String) param.get("type");
         Class fs = OqaService.class;
@@ -69,14 +44,11 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
 //            default:
 //                sendErrorMessage(ctx, "no");
 //        }
-
-        System.out.println(param);
     }
 
     private void sendErrorMessage(ChannelHandlerContext ctx, String errorMsg) {
-        String responseJson = new R()
-                .error(errorMsg)
-                .toString();
+        R responseJson = new R()
+                .error(errorMsg);
         ctx.channel().writeAndFlush(responseJson);
     }
 
@@ -84,6 +56,4 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         oqaService.remove(ctx);
     }
-
-
 }

@@ -1,15 +1,16 @@
 package web.websocket;
 
-import io.netty.buffer.ByteBuf;
+
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import model.vo.R;
 
 import java.util.List;
 
-public class MessageEncoder extends ByteToMessageDecoder {
+public class MessageEncoder extends MessageToMessageEncoder<R> {
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        list.add(new TextWebSocketFrame(byteBuf));
+    protected void encode(ChannelHandlerContext channelHandlerContext, R r, List<Object> list) throws Exception {
+        list.add(new TextWebSocketFrame(r.toString()));
     }
 }

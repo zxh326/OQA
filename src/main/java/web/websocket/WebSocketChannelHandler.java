@@ -7,7 +7,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import org.springframework.stereotype.Component;
 
 @Component
-public class  webSocketChildChannelHandler extends ChannelInitializer<SocketChannel> {
+public class WebSocketChannelHandler extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
@@ -15,8 +15,9 @@ public class  webSocketChildChannelHandler extends ChannelInitializer<SocketChan
         ch.pipeline().addLast(new HttpObjectAggregator(65536)); // 把HTTP头、HTTP体拼成完整的HTTP请求
         ch.pipeline().addLast(new HttpRequestHandler());
         ch.pipeline().addLast(new WebSocketCloseHandler());
-        ch.pipeline().addLast(new WebSocketServerHandler());
 
+        ch.pipeline().addLast(new MessageDecoder());
+        ch.pipeline().addLast(new WebSocketServerHandler());
         ch.pipeline().addLast(new MessageEncoder());
     }
 }

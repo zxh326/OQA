@@ -9,6 +9,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.CharsetUtil;
 import org.springframework.stereotype.Component;
+import utils.Constant;
 
 @Component
 @ChannelHandler.Sharable
@@ -34,6 +35,7 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<Object>{
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
                 "ws:/" + ctx.channel() + "/websocket", null, false);
         WebSocketServerHandshaker handshaker = wsFactory.newHandshaker(request);
+        Constant.webSocketHandshakerMap.put(ctx.channel().id().asLongText(), handshaker);
 
         if (handshaker == null) {
             WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
@@ -41,6 +43,7 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<Object>{
             handshaker.handshake(ctx.channel(), request);
         }
     }
+
 
     private void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, DefaultFullHttpResponse res) {
         // 返回应答给客户端
@@ -55,6 +58,15 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<Object>{
         if (!keepAlive) {
             f.addListener(ChannelFutureListener.CLOSE);
         }
+    }
+
+    /**
+     * 异常的话关闭channel
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
     }
 
 }
