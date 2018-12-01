@@ -16,6 +16,8 @@ import service.OqaService;
 import service.impl.OqaServiceImpl;
 import utils.ChannelHandlerPool;
 
+import java.lang.reflect.Method;
+
 
 /**
  * 对websocket的解析器
@@ -55,14 +57,18 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         }
 
         String type = (String) param.get("type");
-
-        switch (type){
-            case "REGISTER":
-                oqaService.register(param, ctx);
-                break;
-            default:
-                sendErrorMessage(ctx, "no");
-        }
+        Class fs = OqaService.class;
+        Method s =  fs.getMethod(type.toLowerCase(), JSONObject.class, ChannelHandlerContext.class);
+        s.invoke(oqaService, param, ctx);
+//        switch (type){
+//            case "REGISTER":
+//                oqaService.register(param, ctx);
+//                break;
+//            case "SINGLE_SENDING":
+//                break;
+//            default:
+//                sendErrorMessage(ctx, "no");
+//        }
 
         System.out.println(param);
     }
