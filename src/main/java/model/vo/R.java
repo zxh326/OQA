@@ -56,15 +56,13 @@ public class R extends HashMap<String, Object> {
         return this;
     }
     
-    private R setStatus(int status) {
+    private void setStatus(int status) {
         put("status", status);
-        return this;
     }
 
 
-    private R setMsg(String msg) {
+    private void setMsg(String msg) {
         put("msg", msg);
-        return this;
     }
 
     public R setValue(String key, Object val) {
