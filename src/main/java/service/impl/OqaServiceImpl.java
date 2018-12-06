@@ -55,4 +55,28 @@ public class OqaServiceImpl implements OqaService {
             }
         }
     }
+
+    @Override
+    public void singleSend(JSONObject param, ChannelHandlerContext ctx) {
+        Integer fromUserId = (Integer)param.get("fromUserId");
+        Integer toUserId = (Integer)param.get("toUserId");
+        String content = (String)param.get("content");
+
+        ChannelHandlerContext toUserCtx = Constant.onlineUserMap.get(toUserId);
+
+
+        if (toUserCtx == null) {
+            // TODO: 缓存消息
+            R responseJson = new R()
+                    .error(MessageFormat.format("userId为 {0} 的用户没有登录！", toUserId));
+
+            sendMessage(ctx, responseJson);
+        } else {
+            R responseJson = new R().success()
+                    .setData("fromUserId", fromUserId)
+                    .setData("content", content)
+                    .setData("type", ChatType.SINGLESEND);
+            sendMessage(toUserCtx, responseJson);
+        }
+    }
 }
