@@ -1,5 +1,6 @@
 package model.po;
 
+import java.util.Date;
 import java.util.List;
 
 public class Group {
@@ -7,7 +8,7 @@ public class Group {
 
     private String groupName;
 
-    private List<User> users;
+    private Date createTime;
 
     public Integer getGroupId() {
         return groupId;
@@ -25,11 +26,11 @@ public class Group {
         this.groupName = groupName;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
