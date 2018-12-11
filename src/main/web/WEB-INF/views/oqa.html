@@ -31,16 +31,8 @@
                     </div>
                 </li>
             </ul>
-            <ul>
+            <ul id="groups">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groups
-                <li>
-                    <div class="liLeft"><img src="static/img/emoji/emoji_07.png"></div>
-                    <div class="liRight">
-                        <span class="hidden-userId">friendList[i].userId </span>
-                        <span class="intername">friendList</span>
-                        <span class="infor"></span>
-                    </div>
-                </li>
             </ul>
         </div>
         <div class="conRight">
@@ -141,8 +133,13 @@
             var json = JSON.parse(event.data);
             var type = json.data.type;
             
-            switch () {
-                
+            switch (type) {
+                case "REGISTER":
+                    ws.registerReceive();
+                    break;
+                case "SENDGROUPS":
+                    ws.sendGroups(json.data);
+                    break;
             }
         };
 
