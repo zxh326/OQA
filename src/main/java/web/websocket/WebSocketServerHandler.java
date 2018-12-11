@@ -1,12 +1,13 @@
 package web.websocket;
 
 import com.alibaba.fastjson.JSONObject;
-import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import model.vo.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import service.OqaService;
 import service.impl.OqaServiceImpl;
@@ -15,12 +16,12 @@ import utils.ChannelHandlerPool;
 import java.lang.reflect.Method;
 
 @Component
-@ChannelHandler.Sharable
+@Sharable
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<JSONObject> {
     private final Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
 
-//    @Autowired/
-    private OqaService oqaService = OqaServiceImpl.INSTANCE;
+    @Autowired
+    private OqaService oqaService;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {

@@ -1,11 +1,13 @@
 package dao;
 
+import model.po.Group;
 import model.po.User;
 import model.po.UserProfile;
 import model.vo.RegUser;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -32,4 +34,10 @@ public interface UserDao {
 
     @Insert("insert into userprofile (userId, userName, userDepartment) values (#{userId}, #{userName}, #{userDepartment})")
     void addUserProfile(UserProfile userProfile);
+
+    @Select("select * from ogroup join group_users on ogroup.groupId=group_users.groupId where group_users.userId=#{userId}")
+    List<Group> getUserGroup(User user);
+
+    @Select("select * from ogroup join group_users on ogroup.groupId=group_users.groupId where group_users.userId=#{userId}")
+    List<Group> getUserGroupById(Integer userId);
 }

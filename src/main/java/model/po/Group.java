@@ -1,5 +1,6 @@
 package model.po;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,21 @@ public class Group {
     private String groupName;
 
     private Date createTime;
+
+    private List<User> groupUsers;
+
+
+    public Group() {
+        this.createTime = new Date();
+    }
+
+    public List<User> getGroupUsers() {
+        return groupUsers;
+    }
+
+    public void setGroupUsers(List<User> groupUsers) {
+        this.groupUsers = groupUsers;
+    }
 
     public Integer getGroupId() {
         return groupId;
@@ -32,5 +48,15 @@ public class Group {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "groupId=" + groupId +
+                ", groupName='" + groupName + '\'' +
+                ", createTime=" + createTime +
+                ", groupUsers=" + groupUsers +
+                '}';
     }
 }

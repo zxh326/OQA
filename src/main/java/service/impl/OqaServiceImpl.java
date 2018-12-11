@@ -1,24 +1,32 @@
 package service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import dao.UserDao;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import model.po.Group;
 import model.vo.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import service.OqaService;
+import service.UserService;
 import utils.ChatType;
 import utils.Constant;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class OqaServiceImpl implements OqaService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OqaServiceImpl.class);
-    public static final OqaService INSTANCE = new OqaServiceImpl();
+//    public static final OqaService INSTANCE = new OqaServiceImpl();
+
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public void register(JSONObject param, ChannelHandlerContext ctx) {
@@ -30,7 +38,13 @@ public class OqaServiceImpl implements OqaService {
         LOGGER.info(MessageFormat.format("userId为 {0} 的用户登记到在线用户表，当前在线人数为：{1}"
                 , userId, Constant.onlineUserMap.size()));
 
-        Constant.onlineUserMap.get(userId).channel().writeAndFlush(new R().success());
+        // 发送用户group信息
+        List<Group> groups = userDao.getUserGroupById(userId);
+        Constant.onlineUserMap.get(userId)
+                .channel()
+                .writeAndFlush(new R().success()
+                        .setData("groups",groups)
+                        .setData("type", ChatType.SENDGROUPS));
     }
 
 

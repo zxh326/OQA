@@ -1,5 +1,7 @@
 package service.impl;
 
+import model.po.Group;
+import service.OqaService;
 import utils.Secret;
 import utils.TokenManager;
 import dao.UserDao;
@@ -12,9 +14,13 @@ import org.springframework.stereotype.Service;
 import service.UserService;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    public static final UserService INSTANCE = new UserServiceImpl();
+
 
     @Autowired
     private UserDao userDao;
@@ -64,5 +70,20 @@ public class UserServiceImpl implements UserService {
         UserProfile up = userDao.getUserProfileById(userId);
         return new R().success().setData("user", user)
                                 .setData("userprofile", up);
+    }
+
+    @Override
+    public User getUserById(Integer userId) {
+        return userDao.getUserById(userId);
+    }
+
+    @Override
+    public List<Group> getUserGroup(User user) {
+        return userDao.getUserGroup(user);
+    }
+
+    @Override
+    public List<Group> getUserGroupById(Integer userId) {
+        return userDao.getUserGroupById(userId);
     }
 }
