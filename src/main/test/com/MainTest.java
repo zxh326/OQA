@@ -7,6 +7,9 @@ import model.po.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainTest extends SpringTestCase{
 
     @Autowired
@@ -38,6 +41,19 @@ public class MainTest extends SpringTestCase{
         u.setUserId(4);
 
         System.out.println(userDao.getUserGroup(u));
+    }
+
+    @Test
+    public void getUsers(){
+
+        List<Integer> ids = new ArrayList<>();
+
+        ids.add(1);
+        ids.add(2);
+
+        System.out.println(userDao.getUserbyIds(ids));
+
+
     }
 
 }

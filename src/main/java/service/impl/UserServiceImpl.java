@@ -1,7 +1,6 @@
 package service.impl;
 
 import model.po.Group;
-import service.OqaService;
 import utils.Secret;
 import utils.TokenManager;
 import dao.UserDao;

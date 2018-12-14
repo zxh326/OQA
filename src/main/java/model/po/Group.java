@@ -1,6 +1,5 @@
 package model.po;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.Date;
 import java.util.List;
 

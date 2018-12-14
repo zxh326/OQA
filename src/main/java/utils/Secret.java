@@ -2,6 +2,7 @@ package utils;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.Random;
 
 public class Secret {
 
@@ -25,5 +26,21 @@ public class Secret {
         String tmp = enPassword(password);
 
         return sha.contentEquals(tmp);
+    }
+
+    static String getRandomString(Integer num) {
+        String base = "abcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < num; i++) {
+            int number = random.nextInt(base.length());
+            sb.append(base.charAt(number));
+        }
+        return sb.toString();
+    }
+
+
+    public static String getRandomString() {
+        return getRandomString(10);
     }
 }

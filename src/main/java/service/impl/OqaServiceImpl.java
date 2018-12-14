@@ -3,15 +3,14 @@ package service.impl;
 import com.alibaba.fastjson.JSONObject;
 import dao.UserDao;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import model.po.Group;
+import model.po.User;
 import model.vo.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import service.OqaService;
-import service.UserService;
 import utils.ChatType;
 import utils.Constant;
 
@@ -37,14 +36,18 @@ public class OqaServiceImpl implements OqaService {
         sendMessage(ctx, responseJson);
         LOGGER.info(MessageFormat.format("userId为 {0} 的用户登记到在线用户表，当前在线人数为：{1}"
                 , userId, Constant.onlineUserMap.size()));
+        User isTeacher = userDao.getUserById(userId);
+        if (isTeacher.getUserRole() == 1){
+            Constant.onlineTeacher.add(userId);
+        }
 
         // 发送用户group信息
         List<Group> groups = userDao.getUserGroupById(userId);
-        Constant.onlineUserMap.get(userId)
-                .channel()
-                .writeAndFlush(new R().success()
-                        .setData("groups",groups)
-                        .setData("type", ChatType.SENDGROUPS));
+
+        sendMessage(ctx, new R().success()
+                .setData("groups",groups)
+                .setData("teachers", userDao.getUserByIds(Constant.onlineTeacher))
+                .setData("type", ChatType.SENDGROUPS));
     }
 
 
@@ -82,8 +85,6 @@ public class OqaServiceImpl implements OqaService {
             if (entry.getValue() == ctx) {
                 LOGGER.info("正在移除握手实例...");
                 Constant.webSocketHandshakerMap.remove(ctx.channel().id().asLongText());
-                LOGGER.info(MessageFormat.format("已移除握手实例，当前握手实例总数为：{0}"
-                        , Constant.webSocketHandshakerMap.size()));
                 iterator.remove();
                 LOGGER.info(MessageFormat.format("userId为 {0} 的用户已退出聊天，当前在线人数为：{1}"
                         , entry.getKey(), Constant.onlineUserMap.size()));

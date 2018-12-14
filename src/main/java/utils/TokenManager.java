@@ -33,9 +33,9 @@ public class TokenManager {
     public static Token generateToken(Integer id) {
         Token userToken = null;
 
-        String token = CharUtil.getRandomString(32);
+        String token = Secret.getRandomString(32);
         while (tokenMap.containsKey(token)) {
-            token = CharUtil.getRandomString(32);
+            token = Secret.getRandomString(32);
         }
 
         LocalDateTime update = LocalDateTime.now();
