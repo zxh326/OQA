@@ -51,7 +51,7 @@ public class MainTest extends SpringTestCase{
         ids.add(1);
         ids.add(2);
 
-        System.out.println(userDao.getUserbyIds(ids));
+        System.out.println(userDao.getUserByIds(ids));
 
 
     }

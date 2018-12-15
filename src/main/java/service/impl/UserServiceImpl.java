@@ -18,9 +18,6 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    public static final UserService INSTANCE = new UserServiceImpl();
-
-
     @Autowired
     private UserDao userDao;
 

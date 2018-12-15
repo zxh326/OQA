@@ -2,6 +2,7 @@ package utils;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
+import model.vo.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,4 +19,8 @@ public class Constant {
 
     public static List<Integer> onlineTeacher =
             new ArrayList<>();
+
+    public static void sendMessage(ChannelHandlerContext ctx, R message) {
+        ctx.channel().writeAndFlush(message);
+    }
 }

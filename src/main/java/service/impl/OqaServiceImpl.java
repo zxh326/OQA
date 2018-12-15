@@ -3,20 +3,21 @@ package service.impl;
 import com.alibaba.fastjson.JSONObject;
 import dao.UserDao;
 import io.netty.channel.ChannelHandlerContext;
-import model.po.Group;
 import model.po.User;
 import model.vo.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import service.OqaService;
+import service.event.TeacherOnLineEvent;
+import service.event.UserRegisterEvent;
 import utils.ChatType;
 import utils.Constant;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,27 +28,27 @@ public class OqaServiceImpl implements OqaService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
+
     @Override
     public void register(JSONObject param, ChannelHandlerContext ctx) {
         Integer userId = (Integer)param.get("userId");
         Constant.onlineUserMap.put(userId, ctx);
         R responseJson = new R().success()
                 .setData("type", ChatType.REGISTER);
-        sendMessage(ctx, responseJson);
+        Constant.sendMessage(ctx, responseJson);
         LOGGER.info(MessageFormat.format("userId为 {0} 的用户登记到在线用户表，当前在线人数为：{1}"
                 , userId, Constant.onlineUserMap.size()));
+
         User isTeacher = userDao.getUserById(userId);
-        if (isTeacher.getUserRole() == 1){
+
+        if (isTeacher.getUserRole() == 1) {
             Constant.onlineTeacher.add(userId);
+            applicationEventPublisher.publishEvent(new TeacherOnLineEvent(isTeacher));
         }
 
-        // 发送用户group信息
-        List<Group> groups = userDao.getUserGroupById(userId);
-
-        sendMessage(ctx, new R().success()
-                .setData("groups",groups)
-                .setData("teachers", userDao.getUserByIds(Constant.onlineTeacher))
-                .setData("type", ChatType.SENDGROUPS));
+        applicationEventPublisher.publishEvent(new UserRegisterEvent(isTeacher));
     }
 
 
@@ -65,13 +66,13 @@ public class OqaServiceImpl implements OqaService {
             R responseJson = new R()
                     .error(MessageFormat.format("userId为 {0} 的用户没有登录！", toUserId));
 
-            sendMessage(ctx, responseJson);
+            Constant.sendMessage(ctx, responseJson);
         } else {
             R responseJson = new R().success()
                     .setData("fromUserId", fromUserId)
                     .setData("content", content)
                     .setData("type", ChatType.SINGLESEND);
-            sendMessage(toUserCtx, responseJson);
+             Constant.sendMessage(toUserCtx, responseJson);
         }
     }
 
@@ -91,9 +92,5 @@ public class OqaServiceImpl implements OqaService {
                 break;
             }
         }
-    }
-
-    private void sendMessage(ChannelHandlerContext ctx, R message) {
-        ctx.channel().writeAndFlush(message);
     }
 }
