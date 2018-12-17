@@ -6,6 +6,7 @@ import model.po.Group;
 import model.po.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import utils.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,12 @@ public class MainTest extends SpringTestCase{
 
         System.out.println(userDao.getUserByIds(ids));
 
+    }
 
+    @Test
+    public void con(){
+        System.out.println(System.currentTimeMillis()/1000);
+        Constant.lastOnlineTeacher.put(1, (int) System.currentTimeMillis());
     }
 
 }

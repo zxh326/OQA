@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import utils.ChatType;
 import utils.Constant;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class SendInfoListener implements ApplicationListener<UserRegisterEvent> {
@@ -26,13 +28,11 @@ public class SendInfoListener implements ApplicationListener<UserRegisterEvent> 
         // 发送用户group 和当前在线teacher信息
         List<Group> groups = userDao.getUserGroupById(user.getUserId());
 
-        List<Integer> teacherIds = Constant.onlineTeacher;
+        List<Integer> teacherIds = new ArrayList<>(Constant.onlineTeacher.keySet());
 
         if (teacherIds.isEmpty()){
             teacherIds.add(0);
         }
-
-
 
         Constant.sendMessage(Constant.onlineUserMap.get(user.getUserId()), new R().success()
                 .setData("groups",groups)

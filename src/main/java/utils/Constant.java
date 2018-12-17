@@ -17,8 +17,10 @@ public class Constant {
     public static Map<Integer, ChannelHandlerContext> onlineUserMap =
             new HashMap<>();
 
-    public static List<Integer> onlineTeacher =
-            new ArrayList<>();
+    public static Map<Integer, ChannelHandlerContext> onlineTeacher =
+            new HashMap<>();
+
+    public static Map<Integer, Integer> lastOnlineTeacher = new HashMap<>();
 
     public static void sendMessage(ChannelHandlerContext ctx, R message) {
         ctx.channel().writeAndFlush(message);

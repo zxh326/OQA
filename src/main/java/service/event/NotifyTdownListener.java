@@ -11,7 +11,7 @@ import utils.Constant;
 import java.util.Map;
 
 @Service
-public class NotifyTonlineListener implements ApplicationListener<TeacherOnLineEvent> {
+public class NotifyTdownListener implements ApplicationListener<TeacherOnLineEvent> {
 
     @Override
     public void onApplicationEvent(TeacherOnLineEvent teacherOnLineEvent) {
@@ -24,9 +24,8 @@ public class NotifyTonlineListener implements ApplicationListener<TeacherOnLineE
                 Constant.sendMessage(entry.getValue(), new R()
                         .success()
                         .setData("teacher", teacher)
-                        .setData("type", ChatType.NOTIFYONLINE));
+                        .setData("type", ChatType.NOTIFYDOWN));
             }
-            Constant.lastOnlineTeacher.put(teacher.getUserId(), (int) (System.currentTimeMillis()/1000));
         }
     }
 }

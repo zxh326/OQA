@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import service.OqaService;
+import service.event.TeacherDownEvent;
 import service.event.TeacherOnLineEvent;
 import service.event.UserRegisterEvent;
 import utils.ChatType;
@@ -34,18 +35,19 @@ public class OqaServiceImpl implements OqaService {
     @Override
     public void register(JSONObject param, ChannelHandlerContext ctx) {
         Integer userId = (Integer)param.get("userId");
-        Constant.onlineUserMap.put(userId, ctx);
         R responseJson = new R().success()
                 .setData("type", ChatType.REGISTER);
         Constant.sendMessage(ctx, responseJson);
         LOGGER.info(MessageFormat.format("userId为 {0} 的用户登记到在线用户表，当前在线人数为：{1}"
-                , userId, Constant.onlineUserMap.size()));
+                , userId, Constant.onlineUserMap.size()+Constant.onlineTeacher.size()));
 
         User isTeacher = userDao.getUserById(userId);
 
         if (isTeacher.getUserRole() == 1) {
-            Constant.onlineTeacher.add(userId);
+            Constant.onlineTeacher.put(userId, ctx);
             applicationEventPublisher.publishEvent(new TeacherOnLineEvent(isTeacher));
+        }else{
+            Constant.onlineUserMap.put(userId, ctx);
         }
 
         applicationEventPublisher.publishEvent(new UserRegisterEvent(isTeacher));
@@ -59,8 +61,9 @@ public class OqaServiceImpl implements OqaService {
         String content = (String)param.get("content");
 
         ChannelHandlerContext toUserCtx = Constant.onlineUserMap.get(toUserId);
-
-
+        if (toUserCtx==null){
+            toUserCtx = Constant.onlineTeacher.get(toUserId);
+        }
         if (toUserCtx == null) {
             // TODO: 缓存消息
             R responseJson = new R()
@@ -81,14 +84,32 @@ public class OqaServiceImpl implements OqaService {
     public void remove(ChannelHandlerContext ctx) {
         Iterator<Map.Entry<Integer, ChannelHandlerContext>> iterator =
                 Constant.onlineUserMap.entrySet().iterator();
-        while(iterator.hasNext()) {
+        Iterator<Map.Entry<Integer, ChannelHandlerContext>> iterator2 =
+                Constant.onlineTeacher.entrySet().iterator();
+
+        while (iterator.hasNext()){
             Map.Entry<Integer, ChannelHandlerContext> entry = iterator.next();
             if (entry.getValue() == ctx) {
                 LOGGER.info("正在移除握手实例...");
                 Constant.webSocketHandshakerMap.remove(ctx.channel().id().asLongText());
                 iterator.remove();
-                LOGGER.info(MessageFormat.format("userId为 {0} 的用户已退出聊天，当前在线人数为：{1}"
-                        , entry.getKey(), Constant.onlineUserMap.size()));
+                LOGGER.info(MessageFormat.format("userId为 {0} 的用户已退出系统，当前在线人数为：{1}"
+                        , entry.getKey(), Constant.onlineUserMap.size()+Constant.onlineTeacher.size()));
+                break;
+            }
+        }
+        while(iterator2.hasNext()) {
+            Map.Entry<Integer, ChannelHandlerContext> entry = iterator2.next();
+            if (entry.getValue() == ctx) {
+                LOGGER.info("正在移除握手实例...");
+                Constant.webSocketHandshakerMap.remove(ctx.channel().id().asLongText());
+                iterator2.remove();
+                User ifTeacher = userDao.getUserById(entry.getKey());
+                if (ifTeacher.getUserRole() == 1){
+                    applicationEventPublisher.publishEvent(new TeacherDownEvent(ifTeacher));
+                }
+                LOGGER.info(MessageFormat.format("userId为 {0} 的teacher已退出系统，当前在线人数为：{1}"
+                        , entry.getKey(), Constant.onlineUserMap.size()+Constant.onlineTeacher.size()));
                 break;
             }
         }

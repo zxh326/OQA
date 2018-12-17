@@ -18,16 +18,8 @@
     </div>
     <div class="context">
         <div class="conLeft">
-            <ul>
+            <ul id="teachers">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;online teacher
-                <li>
-                    <div class="liLeft"><img src="static/img/emoji/emoji_03.png"></div>
-                    <div class="liRight">
-                        <span class="hidden-userId">friendList[i].userId </span>
-                        <span class="intername">friendList</span>
-                        <span class="infor"></span>
-                    </div>
-                </li>
             </ul>
             <ul id="groups">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groups
@@ -125,10 +117,11 @@
 
 </div>
 
+<script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.actual.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.gradientify.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/static/js/wsocket.js"></script>
-<script type="text/javascript" src="/static/js/jquery.min.js"></script>
-<script type="text/javascript" src="static/js/jquery.gradientify.min.js"></script>
-<script type="text/javascript" src="static/js/bootstrap.min.js"></script>
 <script>
     var userId;
     var socket;
@@ -149,6 +142,12 @@
                     break;
                 case "SENDINFOS":
                     ws.sendInfos(json.data);
+                    break;
+                case "NOTIFYONLINE":
+                    ws.teacherOnline(json.data);
+                    break;
+                case "NOTIFYDOWN":
+                    ws.teacherDown(json.data);
                     break;
             }
         };
