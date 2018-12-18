@@ -42,6 +42,17 @@ public class UserController {
         return userService.login(user, session);
     }
 
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @ResponseBody
+    public R logout(HttpSession session, User user) {
+        if (user == null) {
+            return new R().error("error");
+        }
+        session.removeAttribute("token");
+        return new R().success();
+    }
+
+
     @RequestMapping(value = "/reg", method = RequestMethod.GET)
     public String reg() {
         return "reg";

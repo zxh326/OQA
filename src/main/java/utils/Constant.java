@@ -14,6 +14,9 @@ public class Constant {
     public static Map<String, WebSocketServerHandshaker> webSocketHandshakerMap =
             new ConcurrentHashMap<String, WebSocketServerHandshaker>();
 
+    public static Map<Integer, ChannelHandlerContext> onLineAllUserMap =
+            new HashMap<>();
+
     public static Map<Integer, ChannelHandlerContext> onlineUserMap =
             new HashMap<>();
 

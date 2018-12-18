@@ -42,6 +42,7 @@ public class SendInfoListener implements ApplicationListener<UserRegisterEvent> 
             ctx  = Constant.onlineUserMap.get(user.getUserId());
             responseData.setData("teachers", userDao.getUserByIds(teacherIds));
         }else{
+            responseData.setData("teachers",new ArrayList<>());
             ctx = Constant.onlineTeacher.get(user.getUserId());
         }
         Constant.sendMessage(ctx, responseData);

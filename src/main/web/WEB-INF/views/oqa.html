@@ -153,6 +153,9 @@
                 case "SINGLESEND":
                     ws.receiveSingle(json.data);
                     break;
+                case "GROUPSEND":
+                    ws.groupReceive(json.data);
+                    break;
             }
         };
 

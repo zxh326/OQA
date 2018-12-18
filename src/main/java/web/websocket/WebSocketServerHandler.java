@@ -43,6 +43,9 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<JSONObje
             case "SINGLESEND":
                 oqaService.singleSend(param, ctx);
                 break;
+            case "GROUPSEND":
+                oqaService.groupSend(param, ctx);
+                break;
             default:
                 sendErrorMessage(ctx, "no");
                 break;

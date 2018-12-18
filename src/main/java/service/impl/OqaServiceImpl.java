@@ -46,7 +46,7 @@ public class OqaServiceImpl implements OqaService {
                 .setData("type", ChatType.REGISTER);
         sendMessage(ctx, responseJson);
         LOGGER.info(MessageFormat.format("userId为 {0} 的用户登记到在线用户表，当前在线人数为：{1}"
-                , userId, Constant.onlineUserMap.size()+Constant.onlineTeacher.size()));
+                , userId, Constant.onLineAllUserMap.size()));
 
         User isTeacher = userDao.getUserById(userId);
 
@@ -56,7 +56,7 @@ public class OqaServiceImpl implements OqaService {
         }else{
             Constant.onlineUserMap.put(userId, ctx);
         }
-
+        Constant.onLineAllUserMap.put(userId, ctx);
         applicationEventPublisher.publishEvent(new UserRegisterEvent(isTeacher));
     }
 
@@ -98,6 +98,20 @@ public class OqaServiceImpl implements OqaService {
         if (group == null) {
             R r = new R().error("该群id不存在");
             sendMessage(ctx, r);
+            return;
+        }
+        R responseJson = new R().success()
+                .setData("fromUserId", fromUserId)
+                .setData("toGroupId", group.getGroupId())
+                .setData("content", content)
+                .setData("avatarUrl", userDao.getUserById(fromUserId).getAvatarUrl())
+                .setData("type", ChatType.GROUPSEND);
+        for (User u:group.getGroupUsers()
+             ) {
+            ChannelHandlerContext uctx = Constant.onLineAllUserMap.get(u.getUserId());
+            if(uctx!=null && ctx!=uctx){
+                sendMessage(uctx, responseJson);
+            }
         }
     }
 
@@ -112,11 +126,12 @@ public class OqaServiceImpl implements OqaService {
         while (iterator.hasNext()){
             Map.Entry<Integer, ChannelHandlerContext> entry = iterator.next();
             if (entry.getValue() == ctx) {
+                Constant.onLineAllUserMap.remove(entry.getKey());
                 LOGGER.info("正在移除握手实例...");
                 Constant.webSocketHandshakerMap.remove(ctx.channel().id().asLongText());
                 iterator.remove();
                 LOGGER.info(MessageFormat.format("userId为 {0} 的用户已退出系统，当前在线人数为：{1}"
-                        , entry.getKey(), Constant.onlineUserMap.size()+Constant.onlineTeacher.size()));
+                        , entry.getKey(), Constant.onLineAllUserMap.size()));
                 break;
             }
         }
@@ -124,6 +139,7 @@ public class OqaServiceImpl implements OqaService {
             Map.Entry<Integer, ChannelHandlerContext> entry = iterator2.next();
             if (entry.getValue() == ctx) {
                 LOGGER.info("正在移除握手实例...");
+                Constant.onLineAllUserMap.remove(entry.getKey());
                 Constant.webSocketHandshakerMap.remove(ctx.channel().id().asLongText());
                 iterator2.remove();
                 User ifTeacher = userDao.getUserById(entry.getKey());
@@ -131,7 +147,7 @@ public class OqaServiceImpl implements OqaService {
                     applicationEventPublisher.publishEvent(new TeacherDownEvent(ifTeacher));
                 }
                 LOGGER.info(MessageFormat.format("userId为 {0} 的teacher已退出系统，当前在线人数为：{1}"
-                        , entry.getKey(), Constant.onlineUserMap.size()+Constant.onlineTeacher.size()));
+                        , entry.getKey(), Constant.onLineAllUserMap.size()));
                 break;
             }
         }

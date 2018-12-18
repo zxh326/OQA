@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
         if (userDao.getUserByLoginId(regUser.getLoginId())!=null){
             return new R().error("已注册");
         }
-        if (regUser.getPassword().length() <= 6){
+        if (regUser.getPassword().length() < 6){
             return new R().error("密码太短");
         }
         // TODO: check dep

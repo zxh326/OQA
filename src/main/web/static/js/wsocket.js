@@ -17,6 +17,29 @@ function getUserInfo() {
     })
 }
 
+
+function logout() {
+    // 1. 关闭websocket连接
+    ws.remove();
+
+    // 2. 注销登录状态
+    $.ajax({
+        type : 'POST',
+        url : '/auth/logout',
+        dataType: 'json',
+        async : true,
+        success: function(data) {
+            if (data.status == 200) {
+                // 3. 注销成功，进行页面跳转
+                console.log("注销成功！");
+                window.location.href="login";
+            } else {
+                alert(data.msg);
+            }
+        }
+    });
+}
+
 var sentMessageMap = new SentMessageMap();
 
 function setSentMessageMap(key) {
@@ -219,6 +242,49 @@ var ws ={
         // 消息框处理
         processMsgBox.receiveSingleMsg(answer, fromUserId);
     },
+    groupSend: function(fromUserId, toGroupId, content) {
+        if (!window.WebSocket) {
+            return;
+        }
+        if (socket.readyState == WebSocket.OPEN) {
+            var data = {
+                "fromUserId" : parseInt(fromUserId),
+                "toGroupId" : parseInt(toGroupId),
+                "content" : content,
+                "type" : "GROUPSEND"
+            };
+            socket.send(JSON.stringify(data));
+        } else {
+            alert("Websocket连接没有开启！");
+        }
+    },
+
+
+
+    groupReceive: function(data) {
+        // 获取、构造参数
+        console.log(data);
+        var fromUserId = data.fromUserId;
+        var content = data.content;
+        var toGroupId = data.toGroupId;
+        var fromAvatarUrl = data.avatarUrl;
+        var $receiveLi;
+        $('.conLeft').find('span.hidden-groupId').each(function(){
+            if (this.innerHTML == toGroupId) {
+                $receiveLi = $(this).parent(".liRight").parent("li");
+            }
+        })
+        var answer='';
+        answer += '<li>' +
+            '<div class="answers">'+ content +'</div>' +
+            '<div class="answerHead"><img src="' + fromAvatarUrl + '"/></div>' +
+            '</li>';
+
+        // 消息框处理
+        processMsgBox.receiveGroupMsg(answer, toGroupId);
+        // 列表处理
+        // processFriendList.receiving(content, $receiveLi);
+    },
 
     teacherOnline: function (data) {
         var teacher = data.teacher;
@@ -265,7 +331,7 @@ var processMsgBox = {
         }
 
         // 3. 把 调整后的消息html标签字符串 添加到已发送用户消息表
-        if (toUserId.length != 0) {
+        if (toUserId.length !== 0) {
             sentMessageMap.get(toUserId).push($('.newsList li').last().prop("outerHTML"));
         } else {
             sentMessageMap.get(toGroupId).push($('.newsList li').last().prop("outerHTML"));
@@ -274,6 +340,7 @@ var processMsgBox = {
         // 4. 滚动条往底部移
         $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight);
     },
+
     receiveSingleMsg: function(msg, fromUserId) {
         // 1. 设置消息框可见
         $('.conRight').css("display", "-webkit-box");
@@ -316,6 +383,48 @@ var processMsgBox = {
         $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight );
     },
 
+    receiveGroupMsg: function(msg, toGroupId) {
+        // 1. 设置消息框可见
+        $('.conRight').css("display", "-webkit-box");
+
+        // 2. 把新消息放到暂存区$('.newsList-temp)，如果用户正处于与发出新消息的用户的消息框，则消息要回显
+        $('.newsList-temp').append(msg);
+        var $focusGroupId = $(".conLeft .bg").find('span.hidden-groupId');
+        if ($focusGroupId.length > 0 && $focusGroupId.html() == toGroupId) {
+            $('.newsList').append(msg);
+        }
+
+        // 3. 手动计算、调整回显消息的宽度
+        var $answersDiv = $('.newsList-temp li').last().children("div").first();
+        var fixWidth = 300; // 消息框本身的最长宽度
+        var maxWidth = 480; // 消息框所在行(div)的满宽度(不包含头像框的宽度部分)
+        var minMarginRightWidth = 212; // 按理说应该是 maxwidth - fixWidth，这里出现了点问题
+        var marginRightWidth; // 要计算消息框的margin-right宽度
+        if ($answersDiv.actual('width') < fixWidth) {
+            marginRightWidth = maxWidth - $answersDiv.actual('width');
+            $answersDiv.css("margin-right", marginRightWidth + "px");
+            if ($focusGroupId.length > 0 && $focusGroupId.html() == toGroupId) {
+                $('.newsList li').last().children("div").first()
+                    .css("margin-right", marginRightWidth + "px");
+            }
+        } else {
+            $answersDiv.css("width", fixWidth + "px")
+                .css("margin-right", minMarginRightWidth + "px");
+            if ($focusGroupId.length > 0 && $focusGroupId.html() == toGroupId) {
+                $('.newsList li').last().children("div").first()
+                    .css("width", fixWidth + "px")
+                    .css("margin-right", minMarginRightWidth + "px");
+            }
+        }
+
+        // 4. 把 调整后的消息html标签字符串 添加到已发送用户消息表，并清空暂存区
+        sentMessageMap.get(toGroupId).push($('.newsList-temp li').last().prop("outerHTML"));
+        $('.newsList-temp').empty();
+
+        // 5. 滚动条滑到底
+        $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight);
+    }
+
 };
 
 function friendLiClickEvent() {
@@ -349,7 +458,7 @@ function friendLiClickEvent() {
 
 // 自定义数据结构：已发送用户消息表
 function SentMessageMap() {
-    this.elements = new Array();
+    this.elements = [];
 
     //获取MAP元素个数
     this.size = function () {
@@ -363,7 +472,7 @@ function SentMessageMap() {
 
     //删除MAP所有元素
     this.clear = function () {
-        this.elements = new Array();
+        this.elements = [];
     };
 
     //向MAP中增加元素（key, value)
