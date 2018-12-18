@@ -19,7 +19,8 @@ public class MessageDecoder extends MessageToMessageDecoder<WebSocketFrame> {
             param = JSONObject.parseObject(request);
         } catch (Exception e) {
             sendErrorMessage(ctx, "JSON字符串转换出错！");
-            e.printStackTrace();
+            return;
+//            e.printStackTrace();
         }
         if (param == null) {
             sendErrorMessage(ctx, "参数为空！");

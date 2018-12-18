@@ -34,6 +34,11 @@ public class User  {
 
     public void setUserRole(Integer userRole) {
         this.userRole = userRole;
+        if (this.userRole == 1){
+            setAvatarUrl("/static/img/teacher.jpg");
+        }else{
+            setAvatarUrl("/static/img/stu.jpg");
+        }
     }
 
     @JsonIgnore

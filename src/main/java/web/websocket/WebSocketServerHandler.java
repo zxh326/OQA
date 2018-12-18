@@ -33,18 +33,21 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<JSONObje
     protected void channelRead0(ChannelHandlerContext ctx, JSONObject param) throws Exception {
 
         String type = (String) param.get("type");
-        Class fs = OqaService.class;
-        Method s =  fs.getMethod(type.toLowerCase(), JSONObject.class, ChannelHandlerContext.class);
-        s.invoke(oqaService, param, ctx);
-//        switch (type){
-//            case "REGISTER":
-//                oqaService.register(param, ctx);
-//                break;
-//            case "SINGLE_SENDING":
-//                break;
-//            default:
-//                sendErrorMessage(ctx, "no");
+//        Class fs = OqaService.class;
+//        Method s =  fs.getMethod(type.toLowerCase(), JSONObject.class, ChannelHandlerContext.class);
+//        s.invoke(oqaService, param, ctx);
+        switch (type) {
+            case "REGISTER":
+                oqaService.register(param, ctx);
+                break;
+            case "SINGLESEND":
+                oqaService.singleSend(param, ctx);
+                break;
+            default:
+                sendErrorMessage(ctx, "no");
+                break;
 //        }
+        }
     }
 
     private void sendErrorMessage(ChannelHandlerContext ctx, String errorMsg) {

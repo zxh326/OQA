@@ -17,7 +17,7 @@
 
     </resultMap>
     
-    <select id="getGroup" resultMap="getGroupRes" parameterType="model.po.Group">
+    <select id="getGroup" resultMap="getGroupRes" parameterType="Integer">
       select g.groupId, g.groupName, g.createTime, u.userId, u.loginId
       from (ogroup g left join group_users gu on g.groupId=gu.groupId)
       left join user u on gu.userId=u.userId

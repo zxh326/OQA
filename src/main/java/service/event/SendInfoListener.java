@@ -1,6 +1,7 @@
 package service.event;
 
 import dao.UserDao;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import model.po.Group;
 import model.po.User;
@@ -27,17 +28,22 @@ public class SendInfoListener implements ApplicationListener<UserRegisterEvent> 
 
         // 发送用户group 和当前在线teacher信息
         List<Group> groups = userDao.getUserGroupById(user.getUserId());
+        ChannelHandlerContext ctx;
 
         List<Integer> teacherIds = new ArrayList<>(Constant.onlineTeacher.keySet());
 
         if (teacherIds.isEmpty()){
             teacherIds.add(0);
         }
-
-        Constant.sendMessage(Constant.onlineUserMap.get(user.getUserId()), new R().success()
-                .setData("groups",groups)
-                .setData("teachers", userDao.getUserByIds(teacherIds))
-                .setData("type", ChatType.SENDINFOS));
-
+        R responseData = new R().success()
+                .setData("groups", groups)
+                .setData("type", ChatType.SENDINFOS);
+        if (user.getUserRole() != 1){
+            ctx  = Constant.onlineUserMap.get(user.getUserId());
+            responseData.setData("teachers", userDao.getUserByIds(teacherIds));
+        }else{
+            ctx = Constant.onlineTeacher.get(user.getUserId());
+        }
+        Constant.sendMessage(ctx, responseData);
     }
 }

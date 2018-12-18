@@ -7,6 +7,12 @@ function getUserInfo() {
         success:function (data) {
             console.log(data);
             userId = data.data.user.userId;
+            $("#username").html(data.data.user.userId);
+
+            if (data.data.user.userRole === 1){
+                // $("#teachers").remove();
+            }
+            $("#avatarUrl").attr("src", data.data.user.avatarUrl);
         }
     })
 }
@@ -117,7 +123,7 @@ var ws ={
         }
     },
 
-    registerReceive: function() {
+    registerReceive: function(data) {
         console.log("userId为 " + userId + " 的用户登记到在线用户表成功！");
     },
 
@@ -150,7 +156,7 @@ var ws ={
             setSentMessageMap(groups[i].groupId)
             groupListHTML +=
                 '<li id="g'+ groups[i].groupId + '">' +
-                '<div class="liLeft"><img src="static/img/emoji/emoji_03.png"></div>' +
+                '<div class="liLeft"><img src="static/img/group.jpg"></div>' +
                 '<div class="liRight">' +
                 '<span class="hidden-groupId">' + groups[i].groupId + '</span>' +
                 '<span class="intername">' + groups[i].groupName + '</span>' +
@@ -164,7 +170,54 @@ var ws ={
     },
 
     singleSend: function(fromUserId, toUserId, content){
+        var data = {
+            "fromUserId": parseInt(fromUserId),
+            "toUserId": parseInt(toUserId),
+            "content": content,
+            "type": "SINGLESEND"
+        };
+
+        socket.send(JSON.stringify(data));
         console.log(fromUserId, toUserId, content)
+    },
+
+    receiveSingle: function(data){
+      console.log(data);
+
+        console.log(data);
+        var fromUserId = data.fromUserId;
+        var content = data.content;
+        var fromAvatarUrl = data.avatarUrl;
+        var $receiveLi;
+        if (sentMessageMap.get(fromUserId) === false){
+            setSentMessageMap(fromUserId)
+            $("#groups").append(
+                '<li id="t'+ fromUserId + '">' +
+                '<div class="liLeft"><img src="' + fromAvatarUrl + '"></div>' +
+                '<div class="liRight">' +
+                '<span class="hidden-userId">' + fromUserId + '</span>' +
+                '<span class="intername">' + fromUserId + '</span>' +
+                '<span class="infor"></span>' +
+                '</div>' +
+                '</li>'
+            );
+            $('.conLeft ul li').on('click', friendLiClickEvent);
+        }
+        $('.conLeft').find('span.hidden-userId').each(function(){
+            if (this.innerHTML === fromUserId) {
+                fromAvatarUrl = $(this).parent(".liRight")
+                    .siblings(".liLeft").children('img').attr("src");
+                $receiveLi = $(this).parent(".liRight").parent("li");
+            }
+        })
+        var answer='';
+        answer += '<li>' +
+            '<div class="answers">'+ content +'</div>' +
+            '<div class="answerHead"><img src="' + fromAvatarUrl + '" alt=""/></div>' +
+            '</li>';
+
+        // 消息框处理
+        processMsgBox.receiveSingleMsg(answer, fromUserId);
     },
 
     teacherOnline: function (data) {
@@ -173,7 +226,7 @@ var ws ={
         setSentMessageMap(teacher.userId)
         $("#teachers").append(
             '<li id="t'+ teacher.userId + '">' +
-            '<div class="liLeft"><img src="static/img/emoji/emoji_03.png"></div>' +
+            '<div class="liLeft"><img src="' + teacher.avatarUrl + '"></div>' +
             '<div class="liRight">' +
             '<span class="hidden-userId">' + teacher.userId + '</span>' +
             '<span class="intername">' + teacher.loginId + '</span>' +
@@ -220,11 +273,50 @@ var processMsgBox = {
 
         // 4. 滚动条往底部移
         $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight);
-    }
+    },
+    receiveSingleMsg: function(msg, fromUserId) {
+        // 1. 设置消息框可见
+        $('.conRight').css("display", "-webkit-box");
 
-}
+        // 2. 把新消息放到暂存区$('.newsList-temp)，如果用户正处于与发出新消息的用户的消息框，则消息要回显
+        $('.newsList-temp').append(msg);
+        var $focusUserId = $(".conLeft .bg").find('span.hidden-userId');
+        if ($focusUserId.length > 0 && $focusUserId.html()  == fromUserId) {
+            $('.newsList').append(msg);
+        }
 
+        // 3. 利用暂存区手动计算、调整新消息的宽度；
+        var $answersDiv = $('.newsList-temp li').last().children("div").first();
+        var fixWidth = 300; // 消息框本身的最长宽度
+        var maxWidth = 480; // 消息框所在行(div)的满宽度(不包含头像框的宽度部分)
+        var minMarginRightWidth = 212; // 按理说应该是 maxwidth - fixWidth，这里出现了点问题
+        var marginRightWidth; // 要计算消息框的margin-right宽度
+        if ($answersDiv.actual('width') < fixWidth) {
+            marginRightWidth = maxWidth - $answersDiv.actual('width');
+            $answersDiv.css("margin-right", marginRightWidth + "px");
+            if ($focusUserId.length > 0 && $focusUserId.html()  == fromUserId) {
+                $('.newsList li').last().children("div").first()
+                    .css("margin-right", marginRightWidth + "px");
+            }
+        } else {
+            $answersDiv.css("width", fixWidth + "px")
+                .css("margin-right", minMarginRightWidth + "px");
+            if ($focusUserId.length > 0 && $focusUserId.html()  == fromUserId) {
+                $('.newsList li').last().children("div").first()
+                    .css("width", fixWidth + "px")
+                    .css("margin-right", minMarginRightWidth + "px");
+            }
+        }
 
+        // 4. 把 调整后的消息html标签字符串 添加到已发送用户消息表，并清空暂存区
+        sentMessageMap.get(fromUserId).push($('.newsList-temp li').last().prop("outerHTML"));
+        $('.newsList-temp').empty();
+
+        // 5. 滚动条滑到底
+        $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight );
+    },
+
+};
 
 function friendLiClickEvent() {
     $(this).addClass('bg').siblings().removeClass('bg');

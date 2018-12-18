@@ -21,9 +21,7 @@ public class MainTest extends SpringTestCase{
 
     @Test
     public void getGroups(){
-        Group group = new Group();
-        group.setGroupId(1);
-        System.out.println(groupDao.getGroup(group).toString());
+        System.out.println(groupDao.getGroup(1).toString());
     }
 
     @Test

@@ -9,5 +9,5 @@ public interface GroupDao {
     @Insert("insert into ogroup (groupName, createTime) values (#{groupName}, #{createTime})")
     void createGroup(Group group);
 
-    Group getGroup(Group group);
+    Group getGroup(Integer groupId);
 }

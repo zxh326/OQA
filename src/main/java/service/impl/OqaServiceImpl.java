@@ -1,8 +1,10 @@
 package service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import dao.GroupDao;
 import dao.UserDao;
 import io.netty.channel.ChannelHandlerContext;
+import model.po.Group;
 import model.po.User;
 import model.vo.R;
 import org.slf4j.Logger;
@@ -21,6 +23,8 @@ import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
 
+import static utils.Constant.sendMessage;
+
 @Service
 public class OqaServiceImpl implements OqaService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OqaServiceImpl.class);
@@ -30,6 +34,9 @@ public class OqaServiceImpl implements OqaService {
     private UserDao userDao;
 
     @Autowired
+    private GroupDao groupDao;
+
+    @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
@@ -37,7 +44,7 @@ public class OqaServiceImpl implements OqaService {
         Integer userId = (Integer)param.get("userId");
         R responseJson = new R().success()
                 .setData("type", ChatType.REGISTER);
-        Constant.sendMessage(ctx, responseJson);
+        sendMessage(ctx, responseJson);
         LOGGER.info(MessageFormat.format("userId为 {0} 的用户登记到在线用户表，当前在线人数为：{1}"
                 , userId, Constant.onlineUserMap.size()+Constant.onlineTeacher.size()));
 
@@ -69,13 +76,28 @@ public class OqaServiceImpl implements OqaService {
             R responseJson = new R()
                     .error(MessageFormat.format("userId为 {0} 的用户没有登录！", toUserId));
 
-            Constant.sendMessage(ctx, responseJson);
+            sendMessage(ctx, responseJson);
         } else {
             R responseJson = new R().success()
                     .setData("fromUserId", fromUserId)
                     .setData("content", content)
+                    .setData("avatarUrl", userDao.getUserById(fromUserId).getAvatarUrl())
                     .setData("type", ChatType.SINGLESEND);
-             Constant.sendMessage(toUserCtx, responseJson);
+             sendMessage(toUserCtx, responseJson);
+        }
+    }
+
+    @Override
+    public void groupSend(JSONObject param, ChannelHandlerContext ctx) {
+        Integer fromUserId = (Integer)param.get("fromUserId");
+        Integer toGroupId = (Integer)param.get("toGroupId");
+        String content = (String)param.get("content");
+
+        Group group = groupDao.getGroup(toGroupId);
+
+        if (group == null) {
+            R r = new R().error("该群id不存在");
+            sendMessage(ctx, r);
         }
     }
 

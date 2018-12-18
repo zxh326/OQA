@@ -9,4 +9,6 @@ public interface OqaService {
     void remove(ChannelHandlerContext ctx);
 
     void singleSend(JSONObject param, ChannelHandlerContext ctx);
+
+    void groupSend(JSONObject param, ChannelHandlerContext ctx);
 }
