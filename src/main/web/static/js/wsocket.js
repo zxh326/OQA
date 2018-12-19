@@ -10,7 +10,7 @@ function getUserInfo() {
             $("#username").html(data.data.user.userId);
 
             if (data.data.user.userRole === 1){
-                // $("#teachers").remove();
+                $("#teachers").remove();
             }
             $("#avatarUrl").attr("src", data.data.user.avatarUrl);
         }
@@ -30,7 +30,6 @@ function logout() {
         async : true,
         success: function(data) {
             if (data.status == 200) {
-                // 3. 注销成功，进行页面跳转
                 console.log("注销成功！");
                 window.location.href="login";
             } else {
@@ -323,7 +322,6 @@ var processMsgBox = {
         var marginLeftWidth; // 要计算消息框的margin-left宽度
         if ($newsDiv.actual('width') < fixWidth) {
             marginLeftWidth = maxWidth - $newsDiv.actual('width');
-            ;
             $newsDiv.css("margin-left", marginLeftWidth + "px");
         } else {
             $newsDiv.css("width", fixWidth + "px")

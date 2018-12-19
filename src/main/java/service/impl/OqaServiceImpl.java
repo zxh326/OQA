@@ -28,7 +28,6 @@ import static utils.Constant.sendMessage;
 @Service
 public class OqaServiceImpl implements OqaService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OqaServiceImpl.class);
-//    public static final OqaService INSTANCE = new OqaServiceImpl();
 
     @Autowired
     private UserDao userDao;
@@ -45,19 +44,19 @@ public class OqaServiceImpl implements OqaService {
         R responseJson = new R().success()
                 .setData("type", ChatType.REGISTER);
         sendMessage(ctx, responseJson);
-        LOGGER.info(MessageFormat.format("userId为 {0} 的用户登记到在线用户表，当前在线人数为：{1}"
-                , userId, Constant.onLineAllUserMap.size()));
 
         User isTeacher = userDao.getUserById(userId);
 
+        Constant.onLineAllUserMap.put(userId, ctx);
         if (isTeacher.getUserRole() == 1) {
             Constant.onlineTeacher.put(userId, ctx);
             applicationEventPublisher.publishEvent(new TeacherOnLineEvent(isTeacher));
         }else{
             Constant.onlineUserMap.put(userId, ctx);
         }
-        Constant.onLineAllUserMap.put(userId, ctx);
         applicationEventPublisher.publishEvent(new UserRegisterEvent(isTeacher));
+        LOGGER.info(MessageFormat.format("userId为 {0} 的用户登记到在线用户表，当前在线人数为：{1}"
+                , userId, Constant.onLineAllUserMap.size()));
     }
 
 

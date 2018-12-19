@@ -134,8 +134,8 @@
     if (window.WebSocket) {
         socket = new WebSocket("ws://localhost:3333");
         socket.onmessage = function (event) {
-            var json = JSON.parse(event.data);
-            var type = json.data.type;
+            let json = JSON.parse(event.data);
+            let type = json.data.type;
 
             switch (type) {
                 case "REGISTER":
