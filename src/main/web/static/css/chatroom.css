@@ -312,3 +312,8 @@ transform: scale(1.2);
 .file-upload {
 	cursor: pointer;
 }
+
+
+.shareGroup {
+    float:right;
+}

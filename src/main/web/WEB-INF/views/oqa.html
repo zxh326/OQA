@@ -7,6 +7,13 @@
     <link rel="stylesheet" type="text/css" href="static/css/layui.css">
     <link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="static/css/fileinput.min.css">
+
+    <script type="text/javascript" src="/static/js/clipboard.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.actual.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.gradientify.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/js/wsocket.js"></script>
 </head>
 <body>
 <div class="qqBox">
@@ -15,7 +22,6 @@
             <img id="avatarUrl" src=""/>
         </div>
         <div id="username" class="internetName"></div>
-        <button >new group+</button>
         <button class="close logout" onclick="logout()">&times;</button>
     </div>
     <div class="context">
@@ -24,7 +30,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;online teacher
             </ul>
             <a data-toggle="modal" data-target="#new-group-modal" data-backdrop="static" id="modal-create">
-                newGroup+
+                创建新的群组织
             </a>
             <ul id="groups">
                 <p id="groups_title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groups</p>
@@ -33,6 +39,11 @@
         <div class="conRight">
             <div class="Righthead">
                 <div class="headName"></div>
+                <div class="shareGroup" id="shareGroup">
+                    <a href="" onclick="return false" id="shareGroupLink">
+                        点我复制群连接
+                    </a>
+                </div>
             </div>
             <div class="RightCont">
                 <ul class="newsList-temp"></ul>
@@ -136,7 +147,7 @@
                                        class="col-sm-9"/>
                                 <p class="help-block"></p>
                             </div>
-
+                            <br/><br/>
                             <input type="submit" name="提交" value="提交"/>
                         </div>
                     </form>
@@ -151,12 +162,6 @@
     </div>
 
 </div>
-
-<script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.actual.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.gradientify.min.js"></script>
-<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/static/js/wsocket.js"></script>
 <script>
     var userId;
     var socket;

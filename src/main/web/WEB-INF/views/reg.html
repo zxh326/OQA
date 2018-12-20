@@ -1,53 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>云壁纸,分享壁纸,寻找美好</title>
-    <link media="all" type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link media="all" type="text/css" rel="stylesheet" href="/static/css/loginstyle.css">
+    <title>在线问答系统---注册</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Transparent Sign In Form Responsive Widget,Login form widgets, Sign up Web forms , Login signup Responsive web form,Flat Pricing table,Flat Drop downs,Registration Forms,News letter Forms,Elements" />
+    <script type="application/x-javascript">
+        addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+        function hideURLbar(){ window.scrollTo(0,1); }
+    </script>
+    <script src="/static/js/jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="/static/css/font-awesome.css"/> <!-- Font-Awesome-Icons-CSS -->
+    <link rel="stylesheet" href="/static/css/login.css" type="text/css" media="all" /> <!-- Style-CSS -->
 </head>
-<body>
-<div class="container">
-    <div class="row">
-        <div class="col-md-offset-3 col-md-6">
-            <form class="form-horizontal" style="display: block;" id="login">
-                <span class="heading">注册</span>
-                <div class="form-group">
-                    <input name="loginId" type="text" class="form-control" id="loginId" placeholder="请输入用户名"/>
-                </div>
-                <div class="form-group">
-                    <input name="password" type="password" class="form-control" id="password" placeholder="请输入密码"/>
-                </div>
-                <div class="form-group">
-                    <input name="username" type="text" class="form-control" id="username" placeholder="请输入姓名"/>
-                </div>
-                <div class="form-group">
-                    <input name="department" type="text" class="form-control" id="department" placeholder="请输入系别"/>
-                </div>
-                <div class="form-group">
-                    <input type="radio" value="0" checked name="userRole"/>Student
-                    <input type="radio" value="1" name="userRole"/>Teacher
-                </div>
-                <div class="form-group">
-                    <p id="errormsg"></p>
-                </div>
-                <div class="form-group">
-                    <li class="li4">
-                        <input class="submit" type="button" id="btnReg" value="登录">
-                    </li>
-                    <li class="li3">
-                        <a class="visitor" href="/auth/login"> 登陆新用户</a>
-                    </li>
-                </div>
-            </form>
-        </div>
+
+
+<body class="background">
+<div class="header-w3l">
+    <h1>在线问答系统</h1>
+</div>
+<div class="main-content-agile">
+    <div class="sub-main-w3">
+        <h2>注册</h2>
+        <form>
+            <div class="icon1">
+                <input placeholder="用户名" id="loginId" type="text"/>
+            </div>
+
+            <div class="icon2">
+                <input  placeholder="密码" id="password" type="password"/>
+            </div>
+
+            <div class="icon2">
+                <input name="username" type="text"  id="username" placeholder="请输入姓名"/>
+            </div>
+
+            <div class="icon2">
+                <input name="department" type="text" id="department" placeholder="请输入系别"/>
+            </div>
+
+            <div class="icon3">
+                <input type="radio" value="0" checked name="userRole"/>Student
+                <input type="radio" value="1" name="userRole"/>Teacher
+            </div>
+
+            <div class="icon5">
+                <p id="errormsg"></p>
+            </div>
+            <div class="clear"></div>
+            <input type="button" value="注册" onclick="reg()"/>
+        </form>
     </div>
 </div>
-
-
+<div class="footer">
+    <p>&copy; 2018 Zzde, All Rights Reserved </p>
+</div>
 </body>
 
-<script src="/static/js/jquery.min.js"></script>
+<!--<script src="/static/js/jquery.min.js"></script>-->
 <script type="text/javascript">
     function reg() {
         $.ajax({
@@ -73,23 +83,9 @@
         });
     }
 
-    $('#btnReg').click(function () {
-        reg();
-    })
-</script>
-<!--动态背景-->
-<script src="/static/js/jquery.gradientify.min.js"></script>
-<script src="/static/js/utils.js"></script>
-<script>
-    $(document).ready(function () {
-        $("body").gradientify({
-            gradients: [
-                {start: [49, 76, 172], stop: [242, 159, 191]},
-                {start: [255, 103, 69], stop: [240, 154, 241]},
-                {start: [33, 229, 241], stop: [235, 236, 117]}
-            ]
-        });
-    });
+    // $('#btnSubmit').click(function () {
+    //     login();
+    // })
 </script>
 
 </html>

@@ -442,12 +442,15 @@ function friendLiClickEvent() {
 
     $('.newsList').html('');
     var messageArray;
-    if (toUserId.length != 0) {
+    if (toUserId.length !== 0) {
         messageArray = sentMessageMap.get(toUserId);
         $('#toUserId').val(toUserId);
+        $('#shareGroup').hide();
     } else {
         messageArray = sentMessageMap.get(toGroupId);
         $('#toGroupId').val(toGroupId);
+        $('#shareGroup').show();
+        $('#shareGroupLink').attr('href','http://127.0.0.1:8080/oqa/joingroup/'+toGroupId);
     }
     for (var i = 0; i < messageArray.length; i++) {
         $('.newsList').append(messageArray[i]);

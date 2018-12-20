@@ -26,11 +26,11 @@ public class UserServiceImpl implements UserService {
         User user = userDao.getUserByLoginIdWithRole(tuser);
 
         if (user == null){
-            return new R().error("no loginId");
+            return new R().error("账户名不对");
 
         }
         if (!Secret.checkPassword(tuser.getUserPass(), user.getUserPass())){
-            return new R().error("no password");
+            return new R().error("密码不对");
         }
 
         session.setAttribute("token", TokenManager.generateToken(user.getUserId()).getToken());

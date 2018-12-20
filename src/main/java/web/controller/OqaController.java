@@ -58,20 +58,19 @@ public class OqaController {
         return userService.getUserInfobyId(userId);
     }
 
-    @ResponseBody
     @RequestMapping(value = "/create_group", method = RequestMethod.POST)
-    public R CreateGroup(HttpSession session, Group group){
+    public String CreateGroup(HttpSession session, Group group){
         Integer userId = TokenManager.getUserId((String) session.getAttribute("token"));
 
         User isTeacher = userService.getUserById(userId);
 
         if (isTeacher.getUserRole()!=1){
-            return new R().error("role error");
+            return "redirect:/oqa";
         }
 
         groupService.createGroup(group);
 
         groupService.addGroupUsers(group.getGroupId(), userId);
-        return new R().success().setData("newGroup", group);
+        return "redirect:/oqa";
     }
 }
