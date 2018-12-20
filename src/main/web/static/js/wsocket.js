@@ -11,6 +11,9 @@ function getUserInfo() {
 
             if (data.data.user.userRole === 1){
                 $("#teachers").remove();
+                $("#groups_title").remove();
+            }else{
+                $("#modal-create").remove();
             }
             $("#avatarUrl").attr("src", data.data.user.avatarUrl);
         }
@@ -454,7 +457,7 @@ function friendLiClickEvent() {
     $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight );
 }
 
-// 自定义数据结构：已发送用户消息表
+// 已发送用户消息表
 function SentMessageMap() {
     this.elements = [];
 

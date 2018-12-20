@@ -16,4 +16,14 @@ public class GroupServiceImpl implements GroupService {
     public void createGroup(Group group) {
         groupDao.createGroup(group);
     }
+
+    @Override
+    public void addGroupUsers(Integer groupId, Integer userId) {
+        groupDao.addGroupUsers(groupId, userId);
+    }
+
+    @Override
+    public Group getGroup(Integer groupId) {
+        return groupDao.getGroup(groupId);
+    }
 }

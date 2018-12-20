@@ -10,10 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import service.OqaService;
-import service.impl.OqaServiceImpl;
-import utils.ChannelHandlerPool;
+import utils.ChatType;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @Sharable
@@ -23,39 +24,32 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<JSONObje
     @Autowired
     private OqaService oqaService;
 
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("connect...");
-        super.channelActive(ctx);
+    private Map<String, String> handlerMap;
+
+    public WebSocketServerHandler() {
+        handlerMap = new HashMap<>();
+        handlerMap.put(ChatType.REGISTER.name(), "register");
+        handlerMap.put(ChatType.SINGLESEND.name(), "singleSend");
+        handlerMap.put(ChatType.GROUPSEND.name(), "groupSend");
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, JSONObject param) throws Exception {
 
         String type = (String) param.get("type");
-//        Class fs = OqaService.class;
-//        Method s =  fs.getMethod(type.toLowerCase(), JSONObject.class, ChannelHandlerContext.class);
-//        s.invoke(oqaService, param, ctx);
-        switch (type) {
-            case "REGISTER":
-                oqaService.register(param, ctx);
-                break;
-            case "SINGLESEND":
-                oqaService.singleSend(param, ctx);
-                break;
-            case "GROUPSEND":
-                oqaService.groupSend(param, ctx);
-                break;
-            default:
-                sendErrorMessage(ctx, "no");
-                break;
-//        }
+        Class fs = OqaService.class;
+        String method = handlerMap.get(type);
+        if (method==null){
+            sendErrorMessage(ctx, "method not found");
+
         }
+        Method s =  OqaService.class.getMethod(handlerMap.get(type), JSONObject.class, ChannelHandlerContext.class);
+        s.invoke(oqaService, param, ctx);
     }
 
     private void sendErrorMessage(ChannelHandlerContext ctx, String errorMsg) {
         R responseJson = new R()
-                .error(errorMsg);
+                .error(errorMsg).setData("type","error");
         ctx.channel().writeAndFlush(responseJson);
     }
 

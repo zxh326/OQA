@@ -1,6 +1,7 @@
 package web.controller;
 
 import model.po.Group;
+import model.po.User;
 import service.GroupService;
 import utils.TokenManager;
 import model.vo.R;
@@ -26,8 +27,26 @@ public class OqaController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String Oqa(){
+    public String Oqa(HttpSession session){
         return "oqa";
+    }
+
+    @RequestMapping(value = "/joingroup/{groupId}", method = RequestMethod.GET)
+    public String Oqa(HttpSession session, @PathVariable("groupId") Integer groupId){
+        Integer userId = TokenManager.getUserId((String) session.getAttribute("token"));
+
+        Group group = groupService.getGroup(groupId);
+        if (group==null){
+            return "404";
+        }else{
+            try{
+                groupService.addGroupUsers(group.getGroupId(),userId);
+            }catch (Exception ignored){
+
+            }
+        }
+
+        return "redirect:/oqa";
     }
 
     @ResponseBody
@@ -44,8 +63,15 @@ public class OqaController {
     public R CreateGroup(HttpSession session, Group group){
         Integer userId = TokenManager.getUserId((String) session.getAttribute("token"));
 
+        User isTeacher = userService.getUserById(userId);
+
+        if (isTeacher.getUserRole()!=1){
+            return new R().error("role error");
+        }
 
         groupService.createGroup(group);
-        return new R().success();
+
+        groupService.addGroupUsers(group.getGroupId(), userId);
+        return new R().success().setData("newGroup", group);
     }
 }

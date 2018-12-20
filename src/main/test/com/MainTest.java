@@ -6,6 +6,7 @@ import model.po.Group;
 import model.po.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import utils.ChatType;
 import utils.Constant;
 
 import java.util.ArrayList;
@@ -31,7 +32,9 @@ public class MainTest extends SpringTestCase{
 
         groupDao.createGroup(group);
 
-        System.out.println(group);
+        groupDao.addGroupUsers(group.getGroupId(), 4);
+
+        System.out.println(groupDao.getGroup(group.getGroupId()));
     }
 
     @Test
@@ -58,6 +61,8 @@ public class MainTest extends SpringTestCase{
     public void con(){
         System.out.println(System.currentTimeMillis()/1000);
         Constant.lastOnlineTeacher.put(1, (int) System.currentTimeMillis());
+
+        System.out.println(ChatType.REGISTER.name());
     }
 
 }

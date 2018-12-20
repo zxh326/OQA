@@ -11,7 +11,7 @@ public interface GroupDao {
     @Options(useGeneratedKeys = true, keyProperty = "groupId")
     void createGroup(Group group);
 
-    @Insert("insert into group_users values(#{groupId}, #{userId})")
+    @Insert("insert into group_users values(#{arg0}, #{arg1})")
     void addGroupUsers(Integer groupId, Integer userId);
 
     Group getGroup(Integer groupId);

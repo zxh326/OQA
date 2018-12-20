@@ -15,6 +15,7 @@
             <img id="avatarUrl" src=""/>
         </div>
         <div id="username" class="internetName"></div>
+        <button >new group+</button>
         <button class="close logout" onclick="logout()">&times;</button>
     </div>
     <div class="context">
@@ -22,8 +23,11 @@
             <ul id="teachers">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;online teacher
             </ul>
+            <a data-toggle="modal" data-target="#new-group-modal" data-backdrop="static" id="modal-create">
+                newGroup+
+            </a>
             <ul id="groups">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groups
+                <p id="groups_title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groups</p>
             </ul>
         </div>
         <div class="conRight">
@@ -109,6 +113,36 @@
                 </div>
                 <div class="modal-footer">
                     <button id="upload-cancel" class="btn btn-sm btn-muted" data-dismiss="modal">
+                        <i class="glyphicon glyphicon-remove"></i> 取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="new-group-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title text-primary">创建新群</h3>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" action="/oqa/create_group" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">群名字</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="groupName"
+                                       class="col-sm-9"/>
+                                <p class="help-block"></p>
+                            </div>
+
+                            <input type="submit" name="提交" value="提交"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="new-group-cancel" class="btn btn-sm btn-muted" data-dismiss="modal">
                         <i class="glyphicon glyphicon-remove"></i> 取消
                     </button>
                 </div>
