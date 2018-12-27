@@ -20,6 +20,43 @@ function getUserInfo() {
     })
 }
 
+function getGroupMessage(groupId) {
+    if (sentMessageMap.get(groupId) === undefined | sentMessageMap.get(groupId).length===0 || !sentMessageMap.get(groupId)){
+        $.ajax({
+            url:'oqa/get_groupMessage?groupId='+groupId,
+            type: 'GET',
+            dataType: 'json',
+            async: true,
+            success:function (data) {
+                if (data.data.info == null){
+                    return
+                }
+                let info = data.data.info.groupMessages;
+                for (let i = 0; i < info.length; i++) {
+
+                    if (info[i].fromId === userId){
+                        var msg = '';
+                        msg += '<li>'+
+                            '<div class="news">' + info[i].content + '</div>' +
+                            '<div class="nesHead"><img src="' + info[i].fromavatarUrl + '"/></div>' +
+                            '</li>';
+                        processMsgBox.sendMsg(msg,'',groupId)
+                    }else{
+                        var answer='';
+                        answer += '<li>' +
+                            '<div class="answers">'+ info[i].content +'</div>' +
+                            '<div class="answerHead"><img src="' + info[i].fromavatarUrl + '"/></div>' +
+                            '</li>';
+                        processMsgBox.receiveGroupMsg(answer, groupId);
+                    }
+                }
+                console.log(data.data);
+            }
+        })
+    }
+
+}
+
 
 function logout() {
     // 1. 关闭websocket连接
@@ -90,7 +127,6 @@ $('.sendBtn').on('click',function(){
 
         // 好友列表处理：
         var $sendLi = $('.conLeft').find('li.bg');
-        processFriendList.sending(news, $sendLi);
     }
 })
 
@@ -127,7 +163,6 @@ $('.emjon li').on('click',function(){
     processMsgBox.sendMsg(msg, toUserId, toGroupId);
     var $sendLi = $('.conLeft').find('li.bg');
     content = "[图片]";
-    // processFriendList.sending(content, $sendLi);
 })
 
 
@@ -285,7 +320,6 @@ var ws ={
         // 消息框处理
         processMsgBox.receiveGroupMsg(answer, toGroupId);
         // 列表处理
-        // processFriendList.receiving(content, $receiveLi);
     },
 
     teacherOnline: function (data) {
@@ -383,7 +417,6 @@ var processMsgBox = {
         // 5. 滚动条滑到底
         $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight );
 
-        processFriendList.receiving(content, $receiveLi);
 
     },
 
@@ -428,7 +461,6 @@ var processMsgBox = {
         // 5. 滚动条滑到底
         $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight);
 
-        processFriendList.receiving(content, $receiveLi);
 
     }
 
@@ -453,6 +485,7 @@ function friendLiClickEvent() {
         $('#toUserId').val(toUserId);
         $('#shareGroup').hide();
     } else {
+        getGroupMessage(toGroupId);
         messageArray = sentMessageMap.get(toGroupId);
         $('#toGroupId').val(toGroupId);
         $('#shareGroup').show();

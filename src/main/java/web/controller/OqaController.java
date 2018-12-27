@@ -58,6 +58,12 @@ public class OqaController {
         return userService.getUserInfobyId(userId);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/get_groupMessage", method = RequestMethod.GET)
+    public R getGroupMessage(Integer groupId){
+        return new R().success().setData("info",groupService.getMessage(groupId));
+    }
+
     @RequestMapping(value = "/create_group", method = RequestMethod.POST)
     public String CreateGroup(HttpSession session, Group group){
         Integer userId = TokenManager.getUserId((String) session.getAttribute("token"));

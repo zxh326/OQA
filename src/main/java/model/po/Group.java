@@ -12,6 +12,8 @@ public class Group {
 
     private List<User> groupUsers;
 
+    private List<GroupMesage> groupMessages;
+
 
     public Group() {
         this.createTime = new Date();
@@ -49,6 +51,15 @@ public class Group {
         this.createTime = createTime;
     }
 
+    public List<GroupMesage> getGroupMessages() {
+        return groupMessages;
+    }
+
+    public void setGroupMessages(List<GroupMesage> groupMessages) {
+        this.groupMessages = groupMessages;
+    }
+
+
     @Override
     public String toString() {
         return "Group{" +
@@ -56,6 +67,7 @@ public class Group {
                 ", groupName='" + groupName + '\'' +
                 ", createTime=" + createTime +
                 ", groupUsers=" + groupUsers +
+                ", groupMessages=" + groupMessages +
                 '}';
     }
 }

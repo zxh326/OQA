@@ -4,6 +4,7 @@ public class GroupMesage {
     private Integer id;
     private Integer fromId;
     private Integer groupId;
+    private String fromavatarUrl;
 
     private String content;
 
@@ -37,5 +38,24 @@ public class GroupMesage {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getFromavatarUrl() {
+        return fromavatarUrl;
+    }
+
+    public void setFromavatarUrl(String fromavatarUrl) {
+        this.fromavatarUrl = fromavatarUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "GroupMesage{" +
+                "id=" + id +
+                ", fromId=" + fromId +
+                ", groupId=" + groupId +
+                ", fromavatarUrl='" + fromavatarUrl + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

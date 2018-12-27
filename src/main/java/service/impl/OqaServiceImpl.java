@@ -2,6 +2,7 @@ package service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import dao.GroupDao;
+import dao.MessageDao;
 import dao.UserDao;
 import io.netty.channel.ChannelHandlerContext;
 import model.po.Group;
@@ -34,6 +35,9 @@ public class OqaServiceImpl implements OqaService {
 
     @Autowired
     private GroupDao groupDao;
+
+    @Autowired
+    private MessageDao messageDao;
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
@@ -105,6 +109,7 @@ public class OqaServiceImpl implements OqaService {
                 .setData("content", content)
                 .setData("avatarUrl", userDao.getUserById(fromUserId).getAvatarUrl())
                 .setData("type", ChatType.GROUPSEND);
+        messageDao.insertGroupMessages(fromUserId,group.getGroupId(),content);
         for (User u:group.getGroupUsers()
              ) {
             ChannelHandlerContext uctx = Constant.onLineAllUserMap.get(u.getUserId());

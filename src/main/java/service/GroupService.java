@@ -10,4 +10,6 @@ public interface GroupService {
 
     Group getGroup(Integer groupId);
 
+    Group getMessage(Integer groupID);
+
 }

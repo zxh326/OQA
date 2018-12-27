@@ -7,21 +7,22 @@
         <result column="groupName" property="groupName" jdbcType="VARCHAR" />
         <result column="createTime" property="createTime" jdbcType="DATE" javaType="java.util.Date"/>
 
-        <collection property="groupMessages" javaType="java.util.List" ofType="model.po.User">
-            <result column="userId" property="userId" jdbcType="INTEGER"/>
-            <result column="loginId" property="loginId" jdbcType="INTEGER"/>
-            <result column="userRole" property="userRole" jdbcType="INTEGER"/>
-            <result column="userPass" property="userPass" jdbcType="VARCHAR"/>
-            <result column="avatarUrl" property="avatarUrl" jdbcType="VARCHAR"/>
+        <collection property="groupMessages" javaType="java.util.List" ofType="model.po.GroupMesage">
+            <result column="id" property="id" jdbcType="INTEGER"/>
+            <result column="fromId" property="fromId" jdbcType="INTEGER"/>
+            <result column="fromavatarUrl" property="fromavatarUrl" jdbcType="VARCHAR"/>
+            <result column="content" property="content" jdbcType="VARCHAR"/>
+
         </collection>
 
     </resultMap>
 
     <select id="getGroupMessages" resultMap="getMessageRes" parameterType="Integer">
-      select g.groupId, g.groupName, g.createTime, u.userId, u.loginId
-      from (ogroup g left join group_users gu on g.groupId=gu.groupId)
-      left join user u on gu.userId=u.userId
-      where g.groupId = #{groupId};
+        select g.groupId,g.groupName, g.createTime, gm.id,u.userId as fromId,u.avatarUrl as fromavatarUrl,gm.content
+        from gmessage gm
+        left join ogroup g on gm.groupId=g.groupId
+        left join user u on gm.fromId = u.userId
+        where gm.groupId = #{groupId} order by id;
     </select>
 
 </mapper>

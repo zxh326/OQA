@@ -1,6 +1,7 @@
 package service.impl;
 
 import dao.GroupDao;
+import dao.MessageDao;
 import model.po.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,10 @@ import service.GroupService;
 public class GroupServiceImpl implements GroupService {
 
     @Autowired
-    public GroupDao groupDao;
+    private GroupDao groupDao;
+
+    @Autowired
+    private MessageDao messageDao;
 
     @Override
     public void createGroup(Group group) {
@@ -25,5 +29,10 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group getGroup(Integer groupId) {
         return groupDao.getGroup(groupId);
+    }
+
+    @Override
+    public Group getMessage(Integer groupID) {
+        return messageDao.getGroupMessages(groupID);
     }
 }

@@ -1,6 +1,7 @@
 package com;
 
 import dao.GroupDao;
+import dao.MessageDao;
 import dao.UserDao;
 import model.po.Group;
 import model.po.User;
@@ -16,6 +17,9 @@ public class MainTest extends SpringTestCase{
 
     @Autowired
     GroupDao groupDao;
+
+    @Autowired
+    MessageDao messageDao;
 
     @Autowired
     UserDao userDao;
@@ -63,6 +67,11 @@ public class MainTest extends SpringTestCase{
         Constant.lastOnlineTeacher.put(1, (int) System.currentTimeMillis());
 
         System.out.println(ChatType.REGISTER.name());
+    }
+
+    @Test
+    public void getMessages(){
+        System.out.println(messageDao.getGroupMessages(1));
     }
 
 }
