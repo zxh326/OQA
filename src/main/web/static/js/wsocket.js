@@ -90,7 +90,7 @@ $('.sendBtn').on('click',function(){
 
         // 好友列表处理：
         var $sendLi = $('.conLeft').find('li.bg');
-        // processFriendList.sending(news, $sendLi);
+        processFriendList.sending(news, $sendLi);
     }
 })
 
@@ -382,6 +382,9 @@ var processMsgBox = {
 
         // 5. 滚动条滑到底
         $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight );
+
+        processFriendList.receiving(content, $receiveLi);
+
     },
 
     receiveGroupMsg: function(msg, toGroupId) {
@@ -424,6 +427,9 @@ var processMsgBox = {
 
         // 5. 滚动条滑到底
         $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight);
+
+        processFriendList.receiving(content, $receiveLi);
+
     }
 
 };
@@ -455,9 +461,56 @@ function friendLiClickEvent() {
     for (var i = 0; i < messageArray.length; i++) {
         $('.newsList').append(messageArray[i]);
     }
-
-    // 5.设置消息框滚动条滑到底部
     $('.RightCont').scrollTop($('.RightCont')[0].scrollHeight );
+
+    var $badge = $(this).find(".layui-badge");
+    if ($badge.length > 0) {
+        $badge.remove();
+    }
+}
+
+
+var processFriendList = {
+    sending: function(content, $sendLi) {
+        // 1. 设置部分新消息提醒
+        if (content.length > 8) {
+            content = content.substring(0, 8) + "...";
+        }
+        $('.conLeft').find('li.bg').children('.liRight').children('.infor').text(content);
+        // 2. 如果存在新消息提醒徽章，则去除徽章
+        if ($sendLi.find('.layui-badge').length > 0) {
+            $sendLi.find('.layui-badge').remove();
+        }
+        //$('.conLeft ul').prepend('<li class="bg">' + $sendLi.html() + '</li>');
+        // 3. 好友框新消息置顶
+        $('.conLeft ul').prepend($sendLi.prop("outerHTML"));
+        $sendLi.remove();
+        $('.conLeft ul li').first().on('click', friendLiClickEvent)
+    },
+
+    receiving: function(content, $receiveLi) {
+        // 1. 设置红色提醒徽章
+        var $badge = $receiveLi.find(".layui-badge");
+        if ($badge.length > 0) {
+            $badge.html(parseInt($badge.html()) + 1);
+        } else {
+            var badgeHTML = '<span class="layui-badge badge-avatar">1</span>';
+            $receiveLi.children(".liLeft").prepend(badgeHTML);
+        }
+        // 2. 设置部分新消息提醒
+        if (content.length > 8) { // 只显示前八个字符
+            content = content.substring(0, 8) + "...";
+        }
+        if (content.search("<img") != -1) { // 若是图片，显示 “[图片]”
+            content = "[图片]";
+        }
+        $receiveLi.children(".liRight").children('.infor').text(content);
+
+        // 3. 新消息置顶
+        $('.conLeft ul').prepend($receiveLi.prop("outerHTML"));
+        $('.conLeft ul li').first().on('click',friendLiClickEvent);
+        $receiveLi.remove();
+    }
 }
 
 // 已发送用户消息表

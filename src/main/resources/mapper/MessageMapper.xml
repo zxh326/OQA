@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.MessageDao">
+    <resultMap id="getMessageRes" type="model.po.Group">
+        <id column="groupId" property="groupId" jdbcType="INTEGER" />
+        <result column="groupName" property="groupName" jdbcType="VARCHAR" />
+        <result column="createTime" property="createTime" jdbcType="DATE" javaType="java.util.Date"/>
+
+        <collection property="groupMessages" javaType="java.util.List" ofType="model.po.User">
+            <result column="userId" property="userId" jdbcType="INTEGER"/>
+            <result column="loginId" property="loginId" jdbcType="INTEGER"/>
+            <result column="userRole" property="userRole" jdbcType="INTEGER"/>
+            <result column="userPass" property="userPass" jdbcType="VARCHAR"/>
+            <result column="avatarUrl" property="avatarUrl" jdbcType="VARCHAR"/>
+        </collection>
+
+    </resultMap>
+
+    <select id="getGroupMessages" resultMap="getMessageRes" parameterType="Integer">
+      select g.groupId, g.groupName, g.createTime, u.userId, u.loginId
+      from (ogroup g left join group_users gu on g.groupId=gu.groupId)
+      left join user u on gu.userId=u.userId
+      where g.groupId = #{groupId};
+    </select>
+
+</mapper>
+
+
