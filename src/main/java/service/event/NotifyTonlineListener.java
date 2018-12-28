@@ -18,7 +18,10 @@ public class NotifyTonlineListener implements ApplicationListener<TeacherOnLineE
         User teacher = (User) teacherOnLineEvent.getSource();
         boolean canNotify = System.currentTimeMillis() / 1000 -
                 Constant.lastOnlineTeacher.getOrDefault(teacher.getUserId(), 0) > 30;
+
+        // 是否推送
         if (canNotify){
+            // 遍历在线用户表
             for (Map.Entry<Integer, ChannelHandlerContext> entry: Constant.onlineUserMap.entrySet()
             ) {
                 Constant.sendMessage(entry.getValue(), new R()

@@ -5,12 +5,14 @@ import dao.MessageDao;
 import dao.UserDao;
 import model.po.Group;
 import model.po.User;
+import model.vo.R;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import utils.ChatType;
 import utils.Constant;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainTest extends SpringTestCase{
@@ -71,7 +73,12 @@ public class MainTest extends SpringTestCase{
 
     @Test
     public void getMessages(){
-        System.out.println(messageDao.getGroupMessages(1));
+//        System.out.println(messageDao.getGroupMessages(1));
+
+        R r = new R().setData("123",1);
+
+        HashMap<String, Object> s =  (HashMap<String, Object>)r.get("data");
+        System.out.println(s.get("123"));
     }
 
 }
